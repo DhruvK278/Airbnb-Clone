@@ -28,7 +28,7 @@ export default function Navbar() {
       <div className="h-[180px] w-full hidden md:block"></div>
       <div className="h-[90px] w-full md:hidden"></div>
 
-      <header className={`border-b bg-white z-50 fixed top-0 w-full transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'h-[80px]' : 'h-[170px]'}`}>
+      <header className={`border-b border-[#ebebea] bg-[#f9f9f9] z-50 fixed top-0 w-full transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'h-[80px]' : 'h-[170px]'}`}>
         <div className="max-w-[2520px] mx-auto px-4 sm:px-10 xl:px-20 h-full relative">
           
           {/* Top Row: Logo & Right Menu (Always visible at the top) */}
