@@ -24,6 +24,11 @@ def health_check():
     return {"status": "healthy", "message": "Airbnb Clone API is running"}
 
 
+# Register Routers
+from app.routes import listings
+
+app.include_router(listings.router, prefix="/api/listings", tags=["Listings"])
+
 if __name__ == "__main__":
     import uvicorn
     import sys
