@@ -25,9 +25,13 @@ def health_check():
 
 
 # Register Routers
-from app.routes import listings
+from app.routes import listings, auth, bookings, reviews, favorites
 
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(listings.router, prefix="/api/listings", tags=["Listings"])
+app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
+app.include_router(reviews.router, prefix="/api/reviews", tags=["Reviews"])
+app.include_router(favorites.router, prefix="/api/favorites", tags=["Favorites"])
 
 if __name__ == "__main__":
     import uvicorn

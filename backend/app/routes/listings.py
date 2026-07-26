@@ -74,3 +74,60 @@ def create_listing(listing: ListingCreate, db: Session = Depends(get_db)):
     
     new_listing = ListingService.create_listing(db, listing, host_id)
     return new_listing
+
+@router.get("/{listing_id}/availability")
+def get_listing_availability(listing_id: int, year: int, month: int, db: Session = Depends(get_db)):
+    """
+    Get booked dates for a specific month/year.
+    """
+    from datetime import date
+    import calendar
+    from app.models.booking import Booking
+    
+    start_date = date(year, month, 1)
+    end_date = date(year, month, calendar.monthrange(year, month)[1])
+    
+    bookings = db.query(Booking).filter(
+        Booking.listing_id == listing_id,
+        Booking.status == 'confirmed',
+        Booking.check_in_date <= end_date,
+        Booking.check_out_date >= start_date
+    ).all()
+    
+    booked_dates = []
+    for b in bookings:
+        # Simplistic range appending
+        current = max(b.check_in_date, start_date)
+        end = min(b.check_out_date, end_date)
+        while current <= end:
+            booked_dates.append(current.isoformat())
+            from datetime import timedelta
+            current += timedelta(days=1)
+            
+    return {"booked_dates": list(set(booked_dates))}
+
+@router.put("/{listing_id}", response_model=ListingResponse)
+def update_listing(listing_id: int, listing_data: dict, db: Session = Depends(get_db)):
+    """Mock update endpoint"""
+    listing = ListingService.get_listing(db, listing_id)
+    if not listing:
+        raise HTTPException(status_code=404, detail="Listing not found")
+        
+    for key, value in listing_data.items():
+        if hasattr(listing, key):
+            setattr(listing, key, value)
+            
+    db.commit()
+    db.refresh(listing)
+    return listing
+
+@router.delete("/{listing_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_listing(listing_id: int, db: Session = Depends(get_db)):
+    """Mock delete endpoint"""
+    listing = ListingService.get_listing(db, listing_id)
+    if not listing:
+        raise HTTPException(status_code=404, detail="Listing not found")
+        
+    db.delete(listing)
+    db.commit()
+
