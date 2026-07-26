@@ -17,11 +17,12 @@ export interface Amenity {
 export interface ListingImage {
   id: number;
   image_url: string;
-  display_order: int;
+  display_order: number;
 }
 
 export interface ListingListResponse {
   id: number;
+  host_id: number;
   title: string;
   location: string;
   property_type: string;

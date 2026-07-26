@@ -1,18 +1,35 @@
+"use client";
+
 import Link from 'next/link';
 import { ListingListResponse } from '@/lib/types';
 import { Star } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 interface ListingCardProps {
   listing: ListingListResponse;
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
+  const queryClient = useQueryClient();
   const imageUrl = listing.images && listing.images.length > 0 
     ? listing.images[0].image_url 
     : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop';
 
   // Mocking the price calculation for 2 nights based on the screenshot
   const priceForTwoNights = Math.round(listing.price_per_night * 2 * 83); // roughly mocking USD to INR conversion
+
+  const toggleFavorite = useMutation({
+    mutationFn: async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      await axios.post(`${API_URL}/favorites`, { listing_id: listing.id, user_id: 6 });
+    },
+    onSuccess: () => {
+      toast.success('Added to wishlists');
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    }
+  });
 
   return (
     <Link href={`/listings/${listing.id}`} className="group flex flex-col gap-3 cursor-pointer">
@@ -30,11 +47,14 @@ export default function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {/* Heart Icon */}
-        <div className="absolute top-3 right-3 text-white">
+        <button 
+          onClick={(e) => { e.preventDefault(); toggleFavorite.mutate(); }}
+          className="absolute top-3 right-3 text-white hover:scale-110 transition-transform z-10"
+        >
           <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style={{ display: 'block', fill: 'rgba(0, 0, 0, 0.5)', height: '24px', width: '24px', stroke: 'white', strokeWidth: 2, overflow: 'visible' }}>
             <path d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.9 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z"></path>
           </svg>
-        </div>
+        </button>
       </div>
       
       {/* Details */}
