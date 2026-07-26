@@ -29,23 +29,18 @@ export default function Navbar() {
       <div className="h-[90px] w-full md:hidden"></div>
 
       <header className={`border-b bg-white z-50 fixed top-0 w-full transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'h-[80px]' : 'h-[170px]'}`}>
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 h-full relative">
+        <div className="max-w-[2520px] mx-auto px-4 sm:px-10 xl:px-20 h-full relative">
           
           {/* Top Row: Logo & Right Menu (Always visible at the top) */}
           <div className="flex justify-between items-center pt-5">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center z-20 relative">
-              <Link href="/" className="flex items-center gap-1 text-[#FF385C]">
-                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', height: '32px', width: '32px', fill: 'currentColor' }}>
-                  <path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 6.114 12.54 7.1 14.836l.145.353c.667 1.591.91 2.472.96 3.396l.01.415.001.228c0 4.062-2.877 6.478-6.357 6.478-2.224 0-4.556-1.258-6.709-3.386l-.257-.26-.172-.179h-.011l-.176.185c-2.044 2.1-4.267 3.42-6.414 3.615l-.28.019-.267.006C5.377 31 2.5 28.584 2.5 24.522l.005-.469c.026-.928.23-1.768.83-3.244l.216-.524c.966-2.298 5.083-10.87 7.11-14.836l.53-1.025C12.537 1.963 13.992 1 16 1zm0 2c-1.239 0-2.053.539-2.987 2.21l-.523 1.008c-1.926 3.776-6.06 12.43-7.031 14.736l-.226.54c-.47 1.152-.646 1.79-.668 2.454l-.005.334C4.5 27.335 6.22 29 8.857 29c1.773 0 3.87-1.236 5.831-3.354l.495-.546.683-.837.684.836c1.97 2.122 4.04 3.337 5.793 3.354 2.64 0 4.357-1.665 4.357-4.718l-.001-.212c-.021-.659-.196-1.296-.662-2.435l-.23-.556c-.971-2.306-5.105-10.96-7.03-14.736l-.524-1.008C18.053 3.539 17.24 3 16 3zm.01 10.316c-2.01.021-3.177 1.514-3.177 3.42 0 1.797 1.18 3.37 2.96 3.37 1.737 0 2.92-1.503 2.92-3.327 0-1.89-1.127-3.413-2.703-3.463z" />
-                </svg>
-                <span className="text-xl font-bold tracking-tight hidden lg:block">airbnb</span>
-              </Link>
+                <svg width="102" height="32" viewBox="0 0 3490 1080" color='rgb(255, 56, 92)' style={{ display: 'block' }}><path d="M1494.71 456.953C1458.28 412.178 1408.46 389.892 1349.68 389.892C1233.51 389.892 1146.18 481.906 1146.18 605.892C1146.18 729.877 1233.51 821.892 1349.68 821.892C1408.46 821.892 1458.28 799.605 1494.71 754.83L1500.95 810.195H1589.84V401.588H1500.95L1494.71 456.953ZM1369.18 736.895C1295.33 736.895 1242.08 683.41 1242.08 605.892C1242.08 528.373 1295.33 474.888 1369.18 474.888C1443.02 474.888 1495.49 529.153 1495.49 605.892C1495.49 682.63 1443.8 736.895 1369.18 736.895ZM1656.11 810.195H1750.46V401.588H1656.11V810.195ZM948.912 666.715C875.618 506.859 795.308 344.664 713.438 184.809C698.623 155.177 670.554 98.2527 645.603 67.8412C609.736 24.1733 556.715 0.779785 502.915 0.779785C449.115 0.779785 396.094 24.1733 360.227 67.8412C335.277 98.2527 307.207 155.177 292.392 184.809C210.522 344.664 130.212 506.859 56.9187 666.715C47.5621 687.769 24.9504 737.675 16.3736 760.289C6.2373 787.581 0.779297 817.213 0.779297 846.845C0.779297 975.509 101.362 1079.22 235.473 1079.22C346.193 1079.22 434.3 1008.26 502.915 934.18C571.53 1008.26 659.638 1079.22 770.357 1079.22C904.468 1079.22 1005.83 975.509 1005.83 846.845C1005.83 817.213 999.593 787.581 989.457 760.289C980.88 737.675 958.268 687.769 948.912 666.715ZM502.915 810.195C447.555 738.455 396.094 649.56 396.094 577.819C396.094 506.079 446.776 470.209 502.915 470.209C559.055 470.209 610.516 508.419 610.516 577.819C610.516 647.22 558.275 738.455 502.915 810.195ZM770.357 998.902C688.362 998.902 618.032 941.557 555.741 872.656C619.966 792.541 690.826 679.121 690.826 577.819C690.826 458.513 598.04 389.892 502.915 389.892C407.79 389.892 315.784 458.513 315.784 577.819C315.784 679.098 386.145 792.478 450.144 872.593C387.845 941.526 317.491 998.902 235.473 998.902C146.586 998.902 81.0898 931.061 81.0898 846.845C81.0898 826.57 84.2087 807.856 91.2261 788.361C98.2436 770.426 120.855 720.52 130.212 701.025C203.505 541.17 282.256 380.534 364.126 220.679C378.941 191.047 403.891 141.921 422.605 119.307C442.877 94.3538 470.947 81.0975 502.915 81.0975C534.883 81.0975 562.953 94.3538 583.226 119.307C601.939 141.921 626.89 191.047 641.704 220.679C723.574 380.534 802.325 541.17 875.618 701.025C884.975 720.52 907.587 770.426 914.604 788.361C921.622 807.856 925.52 826.57 925.52 846.845C925.52 931.061 859.244 998.902 770.357 998.902ZM3285.71 389.892C3226.91 389.892 3175.97 413.098 3139.91 456.953V226.917H3045.56V810.195H3134.45L3140.69 754.83C3177.12 799.605 3226.94 821.892 3285.71 821.892C3401.89 821.892 3489.22 729.877 3489.22 605.892C3489.22 481.906 3401.89 389.892 3285.71 389.892ZM3266.22 736.895C3191.6 736.895 3139.91 682.63 3139.91 605.892C3139.91 529.153 3191.6 474.888 3266.22 474.888C3340.85 474.888 3393.32 528.373 3393.32 605.892C3393.32 683.41 3340.07 736.895 3266.22 736.895ZM2827.24 389.892C2766.15 389.892 2723.56 418.182 2699.37 456.953L2693.13 401.588H2604.24V810.195H2698.59V573.921C2698.59 516.217 2741.47 474.888 2800.73 474.888C2856.87 474.888 2888.84 513.097 2888.84 578.599V810.195H2983.19V566.903C2983.19 457.733 2923.15 389.892 2827.24 389.892ZM1911.86 460.072L1905.62 401.588H1816.73V810.195H1911.08V604.332C1911.08 532.592 1954.74 486.585 2027.26 486.585C2042.85 486.585 2058.44 488.144 2070.92 492.043V401.588C2059.22 396.91 2044.41 395.35 2028.04 395.35C1978.58 395.35 1936.66 421.177 1911.86 460.072ZM2353.96 389.892C2295.15 389.892 2244.21 413.098 2208.15 456.953V226.917H2113.8V810.195H2202.69L2208.93 754.83C2245.36 799.605 2295.18 821.892 2353.96 821.892C2470.13 821.892 2557.46 729.877 2557.46 605.892C2557.46 481.906 2470.13 389.892 2353.96 389.892ZM2334.46 736.895C2259.84 736.895 2208.15 682.63 2208.15 605.892C2208.15 529.153 2259.84 474.888 2334.46 474.888C2409.09 474.888 2461.56 528.373 2461.56 605.892C2461.56 683.41 2408.31 736.895 2334.46 736.895ZM1703.28 226.917C1669.48 226.917 1642.08 254.326 1642.08 288.13C1642.08 321.934 1669.48 349.343 1703.28 349.343C1737.09 349.343 1764.49 321.934 1764.49 288.13C1764.49 254.326 1737.09 226.917 1703.28 226.917Z" fill="currentColor"></path></svg>
             </div>
 
             {/* Right menu */}
             <div className="flex items-center gap-3 z-20 relative">
-              <Link href="/host" className="hidden sm:block text-sm font-semibold hover:bg-gray-100 px-4 py-2 rounded-full transition text-gray-900">
+              <Link href="/host" className="hidden sm:block text-[14px] font-semibold hover:bg-gray-100 px-4 py-2 rounded-full transition text-gray-900">
                 Become a host
               </Link>
               
@@ -84,23 +79,28 @@ export default function Navbar() {
           <div className="absolute top-5 left-1/2 -translate-x-1/2 w-full max-w-[850px] flex justify-center z-10 pointer-events-none">
             
             {/* Top Menu (All, Homes, Experiences, Services) */}
-            <div className={`absolute flex items-center gap-6 text-gray-500 font-medium transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'opacity-0 scale-75 -translate-y-4' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}>
-              <div className="flex flex-col items-center gap-1 cursor-pointer text-gray-900 border-b-2 border-gray-900 pb-1">
-                <span className="text-xl">🌍</span>
-                <span className="text-sm">All</span>
+            <div className={`absolute flex items-center gap-8 text-gray-500 font-medium transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'opacity-0 scale-75 -translate-y-4' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}>
+              
+              <div className="flex items-center gap-2 cursor-pointer text-gray-900 border-b-[3px] border-gray-900 pb-2">
+                <img src="/All logo.png" alt="All" className="w-9 h-9 object-contain" />
+                <span className="text-[14px]">All</span>
               </div>
-              <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-gray-900 transition pb-1 border-b-2 border-transparent">
-                <span className="text-xl">🏠</span>
-                <span className="text-sm">Homes</span>
+              
+              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                <img src="/Homes logo.png" alt="Homes" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                <span className="text-[14px]">Homes</span>
               </div>
-              <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-gray-900 transition pb-1 border-b-2 border-transparent">
-                <span className="text-xl">🎈</span>
-                <span className="text-sm">Experiences</span>
+              
+              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                <img src="/experiences logo.png" alt="Experiences" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                <span className="text-[14px]">Experiences</span>
               </div>
-              <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-gray-900 transition pb-1 border-b-2 border-transparent">
-                <span className="text-xl">🛎️</span>
-                <span className="text-sm">Services</span>
+              
+              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                <img src="/Service logo.png" alt="Services" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                <span className="text-[14px]">Services</span>
               </div>
+              
             </div>
 
             {/* Compact Search Bar */}
