@@ -1,134 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-interface HealthResponse {
-  status: string;
-  message: string;
-}
+import { useQuery } from '@tanstack/react-query';
+import { getListings } from '@/lib/api';
+import ListingCard from '@/components/home/ListingCard';
+import CategoryRow from '@/components/home/CategoryRow';
 
 export default function Home() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-    // /health is on the root, not under /api
-    const healthUrl = apiUrl.replace(/\/api\/?$/, "") + "/health";
-
-    fetch(healthUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data: HealthResponse) => {
-        setHealth(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['listings'],
+    queryFn: () => getListings(),
+  });
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-8">
-      {/* Logo */}
-      <div className="mb-8">
-        <svg
-          width="102"
-          height="32"
-          viewBox="0 0 102 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M51 1C42.75 1 36 7.75 36 16C36 24.25 42.75 31 51 31C59.25 31 66 24.25 66 16C66 7.75 59.25 1 51 1Z"
-            fill="#FF385C"
-          />
-          <text
-            x="51"
-            y="21"
-            textAnchor="middle"
-            fill="white"
-            fontSize="14"
-            fontWeight="bold"
-            fontFamily="Inter, sans-serif"
-          >
-            air
-          </text>
-        </svg>
-      </div>
-
-      <h1 className="text-3xl font-bold mb-2 text-gray-600">
-        Airbnb Clone
-      </h1>
-      <p className="text-gray-400 mb-10 text-lg">
-        Full-Stack Health Check
-      </p>
-
-      {/* Health Check Card */}
-      <div className="w-full max-w-md rounded-xl border border-gray-200 p-8 shadow-sm">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Backend Connection
-        </h2>
-
-        {loading && (
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 border-2 border-gray-200 border-t-airbnb rounded-full animate-spin" />
-            <span className="text-gray-400">Connecting to backend...</span>
-          </div>
-        )}
-
-        {health && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-success animate-pulse" />
-              <span className="font-medium text-success">Connected</span>
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 pb-12 mt-6">
+      
+      {isLoading ? (
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {[...Array(10)].map((_, i) => (
+            <div key={i} className="animate-pulse flex flex-col gap-2">
+              <div className="bg-gray-200 rounded-xl aspect-[4/3] w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm text-gray-500">
-              <p>
-                <span className="text-gray-400">status:</span>{" "}
-                {health.status}
-              </p>
-              <p>
-                <span className="text-gray-400">message:</span>{" "}
-                {health.message}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-error" />
-              <span className="font-medium text-error">
-                Connection Failed
-              </span>
-            </div>
-            <div className="bg-red-50 rounded-lg p-4 text-sm text-error">
-              <p>{error}</p>
-              <p className="mt-2 text-gray-400">
-                Make sure the backend is running on port 8000.
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Tech Stack Info */}
-      <div className="mt-10 grid grid-cols-2 gap-4 text-center text-sm text-gray-400">
-        <div className="rounded-lg border border-gray-200 p-4">
-          <p className="font-semibold text-gray-500">Frontend</p>
-          <p>Next.js + TypeScript + Tailwind</p>
+          ))}
         </div>
-        <div className="rounded-lg border border-gray-200 p-4">
-          <p className="font-semibold text-gray-500">Backend</p>
-          <p>FastAPI + SQLAlchemy + SQLite</p>
+      ) : error ? (
+        <div className="mt-12 text-center text-red-500">
+          <p>Error loading listings. Please ensure the backend is running.</p>
         </div>
-      </div>
-    </main>
+      ) : data?.listings?.length === 0 ? (
+        <div className="mt-12 text-center text-gray-500">
+          <h2 className="text-xl font-semibold mb-2">No exact matches</h2>
+          <p>Try changing or removing some of your filters.</p>
+        </div>
+      ) : (
+        <div className="space-y-12">
+          {/* Section 1 */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <h2 className="text-[22px] font-semibold text-gray-900">Popular homes in Rishikesh</h2>
+              <button className="rounded-full bg-gray-100 p-1.5 hover:bg-gray-200 transition"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{display: 'block', fill: 'none', height: '12px', width: '12px', stroke: 'currentColor', strokeWidth: 4, overflow: 'visible'}}><g fill="none"><path d="m12 4 11.3 11.3a1 1 0 0 1 0 1.4L12 28"></path></g></svg></button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {data?.listings.slice(0, 5).map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          </div>
+
+          {/* Section 2 */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <h2 className="text-[22px] font-semibold text-gray-900">Available in Mussoorie next weekend</h2>
+              <button className="rounded-full bg-gray-100 p-1.5 hover:bg-gray-200 transition"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{display: 'block', fill: 'none', height: '12px', width: '12px', stroke: 'currentColor', strokeWidth: 4, overflow: 'visible'}}><g fill="none"><path d="m12 4 11.3 11.3a1 1 0 0 1 0 1.4L12 28"></path></g></svg></button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {data?.listings.slice(5, 10).map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
