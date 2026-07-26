@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search, Globe, Menu } from 'lucide-react';
 import SearchBar from '@/components/search/SearchBar';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const isCompactNavbar = pathname === '/profile' || pathname === '/trips' || pathname === '/host';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,10 +28,15 @@ export default function Navbar() {
   return (
     <>
       {/* Spacer to prevent content from hiding under the fixed navbar. */}
-      <div className="h-[180px] w-full hidden md:block"></div>
-      <div className="h-[90px] w-full md:hidden"></div>
+      {!isCompactNavbar && (
+        <>
+          <div className="h-[180px] w-full hidden md:block"></div>
+          <div className="h-[90px] w-full md:hidden"></div>
+        </>
+      )}
+      {isCompactNavbar && <div className="h-[80px] w-full"></div>}
 
-      <header className={`border-b border-[#ebebea] bg-[#f9f9f9] z-50 fixed top-0 w-full transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'h-[80px]' : 'h-[170px]'}`}>
+      <header className={`border-b border-[#ebebea] bg-[#f9f9f9] z-50 fixed top-0 w-full transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isCompactNavbar ? 'h-[80px]' : (isScrolled ? 'h-[80px]' : 'h-[170px]')}`}>
         <div className="max-w-[2520px] mx-auto px-4 sm:px-10 xl:px-20 h-full relative">
           
           {/* Top Row: Logo & Right Menu (Always visible at the top) */}
@@ -44,91 +52,73 @@ export default function Navbar() {
                 Become a host
               </Link>
               
-              <div className="relative group flex items-center gap-3">
+              <Link href="/profile" className="flex items-center gap-3 relative">
                 <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" className="w-9 h-9 rounded-full object-cover cursor-pointer shadow-sm border border-gray-200" alt="User" />
                 
                 <div className="flex items-center justify-center w-9 h-9 bg-gray-50 border border-gray-300 hover:shadow-md rounded-full cursor-pointer transition">
                   <Menu size={16} className="text-gray-700" />
                 </div>
+              </Link>
+            </div>
+          </div>
+
+          {!isCompactNavbar && (
+            <>
+              {/* Center Crossfade Section (Top Menu vs Compact Search) */}
+              <div className="absolute top-5 left-1/2 -translate-x-1/2 w-full max-w-[850px] flex justify-center z-10 pointer-events-none">
                 
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 top-full mt-2 w-60 bg-white border rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
-                  <Link href="/trips" className="block px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 text-gray-900">
-                    Trips
-                  </Link>
-                  <Link href="/wishlists" className="block px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 text-gray-900">
-                    Wishlists
-                  </Link>
-                  <hr className="my-2 border-gray-200" />
-                  <Link href="/host" className="block px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-900">
-                    Manage listings
-                  </Link>
-                  <Link href="/host" className="block px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-900">
-                    Host an experience
-                  </Link>
-                  <hr className="my-2 border-gray-200" />
-                  <div className="block px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-900 cursor-pointer">
-                    Log out
+                {/* Top Menu (All, Homes, Experiences, Services) */}
+                <div className={`absolute flex items-center gap-8 text-gray-500 font-medium transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'opacity-0 scale-75 -translate-y-4' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}>
+                  
+                  <div className="flex items-center gap-2 cursor-pointer text-gray-900 border-b-[3px] border-gray-900 pb-2">
+                    <img src="/All logo.png" alt="All" className="w-9 h-9 object-contain" />
+                    <span className="text-[14px]">All</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                    <img src="/Homes logo.png" alt="Homes" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                    <span className="text-[14px]">Homes</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                    <img src="/experiences logo.png" alt="Experiences" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                    <span className="text-[14px]">Experiences</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
+                    <img src="/Service logo.png" alt="Services" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
+                    <span className="text-[14px]">Services</span>
+                  </div>
+                  
+                </div>
+
+                {/* Compact Search Bar */}
+                <div 
+                  className={`absolute flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] bg-white pl-2 pr-2 py-2 gap-2 ${isScrolled ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto cursor-pointer' : 'opacity-0 scale-125 translate-y-14'}`}
+                  onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                >
+                  <div className="flex items-center gap-2 border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
+                    <span className="text-lg">🏠</span> Anywhere
+                  </div>
+                  <div className="border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
+                    Anytime
+                  </div>
+                  <div className="font-normal text-sm text-gray-500 pl-4 pr-2">
+                    Add guests
+                  </div>
+                  <div className="bg-[#FF385C] text-white p-2 rounded-full">
+                    <Search size={14} strokeWidth={3} />
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Center Crossfade Section (Top Menu vs Compact Search) */}
-          <div className="absolute top-5 left-1/2 -translate-x-1/2 w-full max-w-[850px] flex justify-center z-10 pointer-events-none">
-            
-            {/* Top Menu (All, Homes, Experiences, Services) */}
-            <div className={`absolute flex items-center gap-8 text-gray-500 font-medium transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isScrolled ? 'opacity-0 scale-75 -translate-y-4' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}>
-              
-              <div className="flex items-center gap-2 cursor-pointer text-gray-900 border-b-[3px] border-gray-900 pb-2">
-                <img src="/All logo.png" alt="All" className="w-9 h-9 object-contain" />
-                <span className="text-[14px]">All</span>
               </div>
-              
-              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
-                <img src="/Homes logo.png" alt="Homes" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
-                <span className="text-[14px]">Homes</span>
-              </div>
-              
-              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
-                <img src="/experiences logo.png" alt="Experiences" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
-                <span className="text-[14px]">Experiences</span>
-              </div>
-              
-              <div className="flex items-center gap-2 cursor-pointer hover:text-gray-900 hover:border-gray-300 transition pb-2 border-b-[3px] border-transparent">
-                <img src="/Service logo.png" alt="Services" className="w-9 h-9 object-contain opacity-70 group-hover:opacity-100" />
-                <span className="text-[14px]">Services</span>
-              </div>
-              
-            </div>
 
-            {/* Compact Search Bar */}
-            <div 
-              className={`absolute flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] bg-white pl-2 pr-2 py-2 gap-2 ${isScrolled ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto cursor-pointer' : 'opacity-0 scale-125 translate-y-14'}`}
-              onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            >
-              <div className="flex items-center gap-2 border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
-                <span className="text-lg">🏠</span> Anywhere
+              {/* Big Search Bar Container */}
+              <div className={`absolute left-1/2 -translate-x-1/2 w-full flex justify-center transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] origin-center ${isScrolled ? 'top-[20px] opacity-0 scale-50 pointer-events-none' : 'top-[85px] opacity-100 scale-100'}`}>
+                <SearchBar />
               </div>
-              <div className="border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
-                Anytime
-              </div>
-              <div className="font-normal text-sm text-gray-500 pl-4 pr-2">
-                Add guests
-              </div>
-              <div className="bg-[#FF385C] text-white p-2 rounded-full">
-                <Search size={14} strokeWidth={3} />
-              </div>
-            </div>
-
-          </div>
-
-          {/* Big Search Bar Container */}
-          <div className={`absolute left-1/2 -translate-x-1/2 w-full flex justify-center transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] origin-center ${isScrolled ? 'top-[20px] opacity-0 scale-50 pointer-events-none' : 'top-[85px] opacity-100 scale-100'}`}>
-            <SearchBar />
-          </div>
-
+            </>
+          )}
         </div>
       </header>
     </>

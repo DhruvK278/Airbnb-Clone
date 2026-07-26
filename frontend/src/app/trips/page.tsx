@@ -32,121 +32,130 @@ export default function TripsPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 py-12">
-        <h1 className="text-3xl font-semibold mb-8">Trips</h1>
-        <div className="animate-pulse space-y-6">
-          {[1, 2].map(i => (
-            <div key={i} className="h-40 bg-gray-200 rounded-2xl w-full max-w-3xl"></div>
-          ))}
+      <div className="flex h-[calc(100vh-80px)] mt-[80px]">
+        <div className="w-full md:w-[450px] p-8 border-r overflow-y-auto">
+          <h1 className="text-3xl font-semibold mb-8">Trips</h1>
+          <div className="animate-pulse space-y-6">
+            {[1, 2].map(i => (
+              <div key={i} className="h-32 bg-gray-200 rounded-2xl w-full"></div>
+            ))}
+          </div>
         </div>
+        <div className="hidden md:block flex-1 bg-gray-200 animate-pulse"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 py-12 text-red-500">
+      <div className="flex h-[calc(100vh-80px)] mt-[80px] p-8 text-red-500">
         Error loading trips.
       </div>
     );
   }
 
-  const upcomingBookings = bookings?.filter(b => b.status === 'confirmed' && new Date(b.check_out_date) >= new Date()) || [];
-  const pastBookings = bookings?.filter(b => b.status === 'completed' || b.status === 'cancelled' || (b.status === 'confirmed' && new Date(b.check_out_date) < new Date())) || [];
+  const upcomingBookings = bookings?.filter((b: any) => b.status === 'confirmed' && new Date(b.check_out_date) >= new Date()) || [];
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 py-12 pb-24">
-      <h1 className="text-3xl font-semibold mb-8 text-gray-900">Trips</h1>
-
-      {bookings?.length === 0 ? (
-        <div className="py-12 border-t">
-          <h2 className="text-xl font-semibold mb-2 text-gray-900">No trips booked... yet!</h2>
-          <p className="text-gray-600 mb-6">Time to dust off your bags and start planning your next adventure</p>
-          <Link href="/" className="border border-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition">
-            Start searching
-          </Link>
-        </div>
-      ) : (
-        <div className="space-y-12">
-          {upcomingBookings.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-semibold mb-6 text-gray-900">Upcoming reservations</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {upcomingBookings.map(booking => (
-                  <div key={booking.id} className="border rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
-                    <div className="h-48 bg-gray-200 relative">
-                      {booking.listing?.images?.[0] && (
-                        <img 
-                          src={booking.listing.images[0].image_url} 
-                          alt="Listing" 
-                          className="w-full h-full object-cover"
-                        />
-                      )}
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
-                        {format(parseISO(booking.check_in_date), 'MMM d')} - {format(parseISO(booking.check_out_date), 'MMM d')}
-                      </div>
+    <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] mt-[80px] w-full max-w-[2520px] mx-auto relative">
+      
+      {/* Left Sidebar - Trip List */}
+      <div className="w-full md:w-[400px] lg:w-[480px] p-6 lg:p-10 border-r bg-white overflow-y-auto flex-shrink-0 z-10">
+        <h1 className="text-2xl font-semibold mb-8 text-center md:text-left">Trips</h1>
+        
+        {upcomingBookings.length === 0 ? (
+          <div className="text-center md:text-left mt-8">
+            <h2 className="text-xl font-semibold mb-2">No trips booked... yet!</h2>
+            <p className="text-gray-600 mb-6 text-sm">Time to dust off your bags and start planning your next adventure</p>
+            <Link href="/" className="border border-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-50 transition inline-block">
+              Start searching
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {upcomingBookings.map((booking: any) => (
+              <div key={booking.id} className="flex gap-4 p-4 border border-gray-200 bg-white rounded-2xl hover:shadow-lg transition cursor-pointer shadow-sm relative group">
+                <div className="w-24 h-24 rounded-xl bg-gray-200 overflow-hidden shrink-0">
+                  {booking.listing?.images?.[0] ? (
+                    <img 
+                      src={booking.listing.images[0].image_url} 
+                      alt="Listing" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-300" />
+                  )}
+                </div>
+                
+                <div className="flex flex-col flex-1 justify-center relative">
+                  <h4 className="text-[17px] font-semibold text-gray-900 leading-tight mb-1">{booking.listing?.location?.split(',')[0]}</h4>
+                  <p className="text-gray-500 text-[13px] mb-2">{format(parseISO(booking.check_in_date), 'dd')}-{format(parseISO(booking.check_out_date), 'dd MMMM yyyy')}</p>
+                  
+                  {/* Fake avatars row */}
+                  <div className="flex items-center">
+                    <div className="flex -space-x-1.5">
+                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="User 1"/>
+                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="User 2"/>
+                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop" alt="User 3"/>
                     </div>
-                    <div className="p-5 flex flex-col flex-1">
-                      <h3 className="font-semibold text-lg truncate">{booking.listing?.location}</h3>
-                      <p className="text-gray-500 text-sm truncate">{booking.listing?.title}</p>
-                      
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center mt-auto">
-                        <div className="font-semibold text-gray-900">₹{(booking.total_price * 83).toLocaleString()}</div>
-                        <button 
-                          onClick={() => {
-                            if(confirm('Are you sure you want to cancel this booking?')) {
-                              cancelMutation.mutate(booking.id);
-                            }
-                          }}
-                          disabled={cancelMutation.isPending}
-                          className="text-red-500 text-sm font-semibold hover:underline disabled:opacity-50"
-                        >
-                          Cancel trip
-                        </button>
-                      </div>
-                    </div>
+                    <span className="text-[10px] font-semibold text-gray-900 ml-2">+{booking.guests || 1}</span>
                   </div>
-                ))}
+                  
+                  {/* Cancel Button */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if(confirm('Are you sure you want to cancel this booking?')) {
+                        cancelMutation.mutate(booking.id);
+                      }
+                    }}
+                    disabled={cancelMutation.isPending}
+                    className="absolute top-0 right-0 text-red-500 text-xs font-semibold hover:underline disabled:opacity-50 opacity-0 group-hover:opacity-100 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        )}
+      </div>
 
-          {pastBookings.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-semibold mb-6 text-gray-900">Where you've been</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {pastBookings.map(booking => (
-                  <div key={booking.id} className="border rounded-2xl overflow-hidden flex flex-col opacity-75">
-                    <div className="h-32 bg-gray-200 relative">
-                       {booking.listing?.images?.[0] && (
-                        <img 
-                          src={booking.listing.images[0].image_url} 
-                          alt="Listing" 
-                          className="w-full h-full object-cover grayscale"
-                        />
-                      )}
-                    </div>
-                    <div className="p-4 flex flex-col">
-                      <h3 className="font-semibold">{booking.listing?.location}</h3>
-                      <p className="text-gray-500 text-sm">
-                        {format(parseISO(booking.check_in_date), 'MMM d, yyyy')}
-                      </p>
-                      <div className="mt-2 text-sm">
-                        Status: <span className="capitalize font-semibold">{booking.status}</span>
-                      </div>
-                      {booking.status === 'completed' && (
-                        <button className="mt-3 text-sm font-semibold underline text-left hover:text-gray-700">
-                          Leave a review
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+      {/* Right Content - Giant Map */}
+      <div className="hidden md:block flex-1 bg-[#e5e3df] relative overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=2000&h=1200&fit=crop" 
+          alt="Map View" 
+          className="w-full h-full object-cover opacity-80" 
+        />
+        
+        {/* Mock Map Controls */}
+        <div className="absolute top-6 right-6 flex flex-col shadow-md rounded-xl overflow-hidden bg-white">
+          <button className="w-10 h-10 flex items-center justify-center border-b hover:bg-gray-50 text-xl font-semibold text-gray-700">+</button>
+          <button className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 text-xl font-semibold text-gray-700">-</button>
         </div>
-      )}
+
+        {/* Dynamic Map Pins for actual bookings */}
+        {upcomingBookings.map((booking: any, idx: number) => {
+          // Mock positions for visual effect (just randomizing based on ID for a fixed map look)
+          const top = 30 + ((booking.id * 17) % 50); 
+          const left = 30 + ((booking.id * 23) % 50);
+          
+          return (
+            <div 
+              key={`pin-${booking.id}`}
+              className="absolute bg-white px-2 py-1 rounded-xl shadow-lg border border-gray-200 text-xs font-bold text-gray-900 flex flex-col items-center justify-center"
+              style={{ top: `${top}%`, left: `${left}%` }}
+            >
+              {booking.listing?.images?.[0] && (
+                <img src={booking.listing.images[0].image_url} className="w-8 h-8 rounded-lg mb-1 object-cover" />
+              )}
+              {booking.listing?.location?.split(',')[0]}
+            </div>
+          );
+        })}
+      </div>
+      
     </div>
   );
 }
