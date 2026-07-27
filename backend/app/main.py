@@ -43,6 +43,9 @@ def seed_database():
         if backend_dir not in sys.path:
             sys.path.insert(0, backend_dir)
             
+        from app.database import Base, engine
+        Base.metadata.create_all(bind=engine)
+        
         from add_listings import add_more
         add_more()
         return {"status": "success", "message": "Database perfectly seeded with 10 listings!"}
