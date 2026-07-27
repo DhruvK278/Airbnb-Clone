@@ -70,6 +70,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isSearchPage = pathname.startsWith('/search');
+  const isListingPage = pathname.startsWith('/listings/');
   const isCompactNavbar = pathname === '/profile' || pathname === '/trips' || pathname === '/host';
 
   useEffect(() => {
@@ -87,14 +88,14 @@ export default function Navbar() {
   // Determine navbar height
   const getNavbarHeight = () => {
     if (isSearchPage) return 'h-[120px]'; // room for pill + filter row
-    if (isCompactNavbar) return 'h-[80px]';
+    if (isListingPage || isCompactNavbar) return 'h-[80px]';
     return isScrolled ? 'h-[80px]' : 'h-[170px]';
   };
 
   // Determine spacer height
   const getSpacerHeight = () => {
     if (isSearchPage) return 'h-[120px]';
-    if (isCompactNavbar) return 'h-[80px]';
+    if (isListingPage || isCompactNavbar) return 'h-[80px]';
     return null; // handled by the existing home page spacer
   };
 
@@ -103,7 +104,7 @@ export default function Navbar() {
       {/* Spacer */}
       {isSearchPage ? (
         <div className="h-[120px] w-full"></div>
-      ) : isCompactNavbar ? (
+      ) : isListingPage || isCompactNavbar ? (
         <div className="h-[80px] w-full"></div>
       ) : (
         <>
@@ -147,8 +148,30 @@ export default function Navbar() {
             </Suspense>
           )}
 
+          {/* ── Listing Page: static compact pill ── */}
+          {isListingPage && (
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 flex justify-center z-10">
+              <Link href="/">
+                <div className="flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition bg-white pl-2 pr-2 py-2 gap-2 cursor-pointer">
+                  <div className="flex items-center gap-2 border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
+                    <span className="text-lg">🏠</span> Anywhere
+                  </div>
+                  <div className="border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
+                    Anytime
+                  </div>
+                  <div className="font-normal text-sm text-gray-500 pl-4 pr-2">
+                    Add guests
+                  </div>
+                  <div className="bg-[#FF385C] text-white p-2 rounded-full">
+                    <Search size={14} strokeWidth={3} />
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
+
           {/* ── Home Page: full search bar with crossfade ── */}
-          {!isCompactNavbar && !isSearchPage && (
+          {!isListingPage && !isCompactNavbar && !isSearchPage && (
             <>
               {/* Center Crossfade Section (Top Menu vs Compact Search) */}
               <div className="absolute top-5 left-1/2 -translate-x-1/2 w-full max-w-[850px] flex justify-center z-10 pointer-events-none">

@@ -92,40 +92,50 @@ body {
 }
 
 /* ── DayPicker Airbnb Overrides ── */
-.rdp-airbnb {
+.rdp-root.rdp-airbnb {
   --rdp-accent-color: #222222;
   --rdp-accent-background-color: #f7f7f7;
+  --rdp-range_start-date-background-color: #222222;
+  --rdp-range_end-date-background-color: #222222;
   --rdp-range_start-color: #ffffff;
   --rdp-range_end-color: #ffffff;
-  --rdp-range_middle-background-color: #f0f0f0;
-  --rdp-range_start-background: #222222;
-  --rdp-range_end-background: #222222;
+  --rdp-range_middle-background-color: #f7f7f7;
+  --rdp-range_middle-color: #222222;
+  --rdp-today-color: #222222;
+  --rdp-selected-border: 2px solid #222222;
+  
+  --rdp-day-height: 48px;
+  --rdp-day-width: 48px;
+  --rdp-day_button-height: 46px;
+  --rdp-day_button-width: 46px;
+  --rdp-day_button-border-radius: 50%;
+  --rdp-months-gap: 2.5rem;
+  
   font-family: var(--font-sans);
 }
 
-.rdp-airbnb .rdp-day {
-  border-radius: 9999px;
+.rdp-root.rdp-airbnb .rdp-day_button:hover:not([disabled]) {
+  border: 1px solid #222222;
 }
 
-.rdp-airbnb .rdp-day_button {
-  border-radius: 9999px;
-  font-weight: 500;
+.rdp-root.rdp-airbnb .rdp-months {
+  display: flex;
+  flex-direction: row;
+  gap: var(--rdp-months-gap, 2.5rem);
 }
 
-.rdp-airbnb .rdp-day_button:hover:not([disabled]) {
-  border: 1.5px solid #222222;
-}
-
-.rdp-airbnb .rdp-caption_label {
+.rdp-root.rdp-airbnb .rdp-caption_label {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
 }
 
-.rdp-airbnb .rdp-nav {
-  gap: 4px;
-}
-
-.rdp-airbnb .rdp-chevron {
+.rdp-root.rdp-airbnb .rdp-chevron {
   fill: #222222;
 }
 
+.rdp-root.rdp-airbnb .rdp-weekday {
+  font-size: 12px;
+  font-weight: 600;
+  color: #717171;
+  text-transform: capitalize;
+}

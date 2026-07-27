@@ -183,7 +183,7 @@ export default function SearchBar() {
 
       {/* When Dropdown — Real Calendar */}
       {activeMenu === 'when' && (
-        <div className="absolute top-[120%] left-1/2 -translate-x-1/2 bg-white rounded-[32px] p-6 shadow-[0_6px_20px_rgba(0,0,0,0.2)] border border-gray-200 z-50">
+        <div className="absolute top-[120%] left-1/2 -translate-x-1/2 w-[850px] bg-white rounded-[32px] p-8 shadow-[0_6px_20px_rgba(0,0,0,0.2)] border border-gray-200 z-50 flex flex-col items-center">
           {/* Dates / Flexible toggle */}
           <div className="flex justify-center mb-4">
             <div className="flex bg-[#ebebeb] rounded-full p-1">
@@ -206,16 +206,9 @@ export default function SearchBar() {
             disabled={[{ before: new Date() }]}
             startMonth={new Date()}
             endMonth={addMonths(new Date(), 11)}
-            classNames={{
-              root: 'rdp-airbnb',
-              months: 'flex gap-8',
-              month_caption: 'text-center font-semibold mb-4 text-gray-900 text-base',
-              day_button: 'w-10 h-10 rounded-full text-sm font-medium hover:border hover:border-black transition-all flex items-center justify-center',
-              selected: 'bg-gray-900 text-white rounded-full',
-              range_start: 'bg-gray-900 text-white rounded-full',
-              range_end: 'bg-gray-900 text-white rounded-full',
-              range_middle: 'bg-gray-100 text-gray-900 rounded-none',
-              today: 'font-bold',
+            className="rdp-airbnb"
+            formatters={{
+              formatWeekdayName: (day) => day.toLocaleDateString('en-US', { weekday: 'narrow' })
             }}
           />
 
