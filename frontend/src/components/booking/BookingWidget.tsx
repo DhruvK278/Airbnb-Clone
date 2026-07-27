@@ -55,12 +55,9 @@ export default function BookingWidget({ listing }: { listing: ListingDetailRespo
       toast.error("Please select check-in and check-out dates");
       return;
     }
-    mutation.mutate({
-      listing_id: listing.id,
-      check_in_date: format(dateRange.from, 'yyyy-MM-dd'),
-      check_out_date: format(dateRange.to, 'yyyy-MM-dd'),
-      num_guests: guests
-    });
+    const checkIn = format(dateRange.from, 'yyyy-MM-dd');
+    const checkOut = format(dateRange.to, 'yyyy-MM-dd');
+    router.push(`/book?listing_id=${listing.id}&check_in=${checkIn}&check_out=${checkOut}&guests=${guests}`);
   };
 
   return (

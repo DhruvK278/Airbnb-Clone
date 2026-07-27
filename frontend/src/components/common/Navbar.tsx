@@ -69,9 +69,6 @@ function SearchNavContent() {
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  const isSearchPage = pathname.startsWith('/search');
-  const isListingPage = pathname.startsWith('/listings/');
-  const isCompactNavbar = pathname === '/profile' || pathname === '/trips' || pathname === '/host';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,17 +82,22 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isBookPage = pathname === '/book';
+  const isSearchPage = pathname.startsWith('/search');
+  const isListingPage = pathname.startsWith('/listings/');
+  const isCompactNavbar = pathname === '/profile' || pathname === '/trips' || pathname === '/host';
+
   // Determine navbar height
   const getNavbarHeight = () => {
     if (isSearchPage) return 'h-[120px]'; // room for pill + filter row
-    if (isListingPage || isCompactNavbar) return 'h-[80px]';
+    if (isListingPage || isCompactNavbar || isBookPage) return 'h-[80px]';
     return isScrolled ? 'h-[80px]' : 'h-[170px]';
   };
 
   // Determine spacer height
   const getSpacerHeight = () => {
     if (isSearchPage) return 'h-[120px]';
-    if (isListingPage || isCompactNavbar) return 'h-[80px]';
+    if (isListingPage || isCompactNavbar || isBookPage) return 'h-[80px]';
     return null; // handled by the existing home page spacer
   };
 
@@ -104,7 +106,7 @@ export default function Navbar() {
       {/* Spacer */}
       {isSearchPage ? (
         <div className="h-[120px] w-full"></div>
-      ) : isListingPage || isCompactNavbar ? (
+      ) : isListingPage || isCompactNavbar || isBookPage ? (
         <div className="h-[80px] w-full"></div>
       ) : (
         <>
@@ -126,30 +128,32 @@ export default function Navbar() {
             </div>
 
             {/* Right menu */}
-            <div className="flex items-center gap-3 z-20 relative">
-              <Link href="/host" className="hidden sm:block text-[14px] font-semibold hover:bg-gray-100 px-4 py-2 rounded-full transition text-gray-900">
-                Become a host
-              </Link>
+            {!isBookPage && (
+              <div className="flex items-center gap-3 z-20 relative">
+                <Link href="/host" className="hidden sm:block text-[14px] font-semibold hover:bg-gray-100 px-4 py-2 rounded-full transition text-gray-900">
+                  Become a host
+                </Link>
 
-              <Link href="/profile" className="flex items-center gap-3 relative">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" className="w-9 h-9 rounded-full object-cover cursor-pointer shadow-sm border border-gray-200" alt="User" />
+                <Link href="/profile" className="flex items-center gap-3 relative">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" className="w-9 h-9 rounded-full object-cover cursor-pointer shadow-sm border border-gray-200" alt="User" />
 
-                <div className="flex items-center justify-center w-9 h-9 bg-gray-50 border border-gray-300 hover:shadow-md rounded-full cursor-pointer transition">
-                  <Menu size={16} className="text-gray-700" />
-                </div>
-              </Link>
-            </div>
+                  <div className="flex items-center justify-center w-9 h-9 bg-gray-50 border border-gray-300 hover:shadow-md rounded-full cursor-pointer transition">
+                    <Menu size={16} className="text-gray-700" />
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* ── Search Page: compact pill + filter row inside navbar ── */}
-          {isSearchPage && (
+          {!isBookPage && isSearchPage && (
             <Suspense fallback={<div />}>
               <SearchNavContent />
             </Suspense>
           )}
 
           {/* ── Listing Page: static compact pill ── */}
-          {isListingPage && (
+          {!isBookPage && isListingPage && (
             <div className="absolute top-5 left-1/2 -translate-x-1/2 flex justify-center z-10">
               <Link href="/">
                 <div className="flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition bg-white pl-2 pr-2 py-2 gap-2 cursor-pointer">
@@ -171,7 +175,7 @@ export default function Navbar() {
           )}
 
           {/* ── Home Page: full search bar with crossfade ── */}
-          {!isListingPage && !isCompactNavbar && !isSearchPage && (
+          {!isBookPage && !isListingPage && !isCompactNavbar && !isSearchPage && (
             <>
               {/* Center Crossfade Section (Top Menu vs Compact Search) */}
               <div className="absolute top-5 left-1/2 -translate-x-1/2 w-full max-w-[850px] flex justify-center z-10 pointer-events-none">
