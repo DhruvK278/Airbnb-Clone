@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
-    CORS_ORIGINS: str = '["http://localhost:3000","http://localhost:3001"]'
+    CORS_ORIGINS: str = '["*"]'
 
     @property
     def cors_origins_list(self) -> List[str]:

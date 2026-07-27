@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ListingListResponse } from '@/lib/types';
 import { Star } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -20,13 +20,27 @@ export default function ListingCard({ listing }: ListingCardProps) {
   // Mocking the price calculation for 2 nights based on the screenshot
   const priceForTwoNights = Math.round(listing.price_per_night * 2 * 83); // roughly mocking USD to INR conversion
 
+  const { data: favorites } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const { data } = await axios.get(`${API_URL}/favorites`);
+      return data;
+    }
+  });
+
+  const isFavorite = favorites?.some((fav: any) => fav.listing_id === listing.id);
+
   const toggleFavorite = useMutation({
     mutationFn: async () => {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-      await axios.post(`${API_URL}/favorites`, { listing_id: listing.id, user_id: 6 });
+      if (isFavorite) {
+        await axios.delete(`${API_URL}/favorites/${listing.id}`);
+      } else {
+        await axios.post(`${API_URL}/favorites`, { listing_id: listing.id });
+      }
     },
     onSuccess: () => {
-      toast.success('Added to wishlists');
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
     }
   });
@@ -51,7 +65,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
           onClick={(e) => { e.preventDefault(); toggleFavorite.mutate(); }}
           className="absolute top-3 right-3 text-white hover:scale-110 transition-transform z-10"
         >
-          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style={{ display: 'block', fill: 'rgba(0, 0, 0, 0.5)', height: '24px', width: '24px', stroke: 'white', strokeWidth: 2, overflow: 'visible' }}>
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style={{ display: 'block', fill: isFavorite ? '#FF385C' : 'rgba(0, 0, 0, 0.5)', height: '24px', width: '24px', stroke: 'white', strokeWidth: 2, overflow: 'visible' }}>
             <path d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.9 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z"></path>
           </svg>
         </button>

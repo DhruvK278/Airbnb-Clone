@@ -7,6 +7,9 @@ from app.database import get_db
 from app.schemas.listing import ListingCreate, ListingResponse, ListingListPaginated
 from app.services.listing_service import ListingService
 
+def get_current_host_id() -> int:
+    return 2  # Match frontend HOST_ID for mock consistency
+
 router = APIRouter()
 
 @router.get("", response_model=ListingListPaginated)
@@ -67,10 +70,9 @@ def get_listing(listing_id: int, db: Session = Depends(get_db)):
 def create_listing(listing: ListingCreate, db: Session = Depends(get_db)):
     """
     Create a new listing.
-    For now, mocks the host_id to 1.
+    For now, mocks the host_id.
     """
-    # Mocking authenticated host ID as 1
-    host_id = 1 
+    host_id = get_current_host_id()
     
     new_listing = ListingService.create_listing(db, listing, host_id)
     return new_listing
@@ -113,6 +115,10 @@ def update_listing(listing_id: int, listing_data: dict, db: Session = Depends(ge
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
         
+    host_id = get_current_host_id()
+    if listing.host_id != host_id:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this listing")
+        
     for key, value in listing_data.items():
         if hasattr(listing, key):
             setattr(listing, key, value)
@@ -127,6 +133,10 @@ def delete_listing(listing_id: int, db: Session = Depends(get_db)):
     listing = ListingService.get_listing(db, listing_id)
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
+        
+    host_id = get_current_host_id()
+    if listing.host_id != host_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this listing")
         
     db.delete(listing)
     db.commit()

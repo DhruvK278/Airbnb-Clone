@@ -55,9 +55,9 @@ export default function HostDashboard() {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-20 py-12 pb-24">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-semibold text-gray-900">Host Dashboard</h1>
-        <button className="bg-[#FF385C] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#D70466] transition">
+        <Link href="/host/create" className="bg-[#FF385C] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#D70466] transition inline-block">
           Create Listing
-        </button>
+        </Link>
       </div>
 
       <div className="mb-12">
@@ -99,7 +99,7 @@ export default function HostDashboard() {
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-3">
                         <Link href={`/listings/${listing.id}`} className="text-blue-600 hover:underline font-semibold text-sm">View</Link>
-                        <button className="text-gray-600 hover:underline font-semibold text-sm">Edit</button>
+                        <Link href={`/host/edit/${listing.id}`} className="text-gray-600 hover:underline font-semibold text-sm">Edit</Link>
                         <button 
                           onClick={() => {
                             if(confirm('Are you sure you want to delete this listing?')) {
