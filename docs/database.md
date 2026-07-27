@@ -1,4 +1,4 @@
-# Airbnb Clone Database Schema (Phase 2)
+# Airbnb Clone Database Schema 
 
 ```mermaid
 erDiagram
