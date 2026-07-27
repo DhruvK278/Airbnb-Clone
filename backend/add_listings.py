@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from app.database import SessionLocal
 from app.models.listing import Listing, ListingImage, Amenity, ListingAmenity
 from app.models.user import User
-from app.auth.security import get_password_hash
+from app.routes.auth import hash_password
 
 def add_more():
     db = SessionLocal()
@@ -21,7 +21,7 @@ def add_more():
     for i in range(1, 6):
         user = User(
             email=f"host{i}@airbnb.com",
-            password_hash=get_password_hash("password123"),
+            password_hash=hash_password("password123"),
             full_name=f"Host Number {i}",
             bio="I love hosting people from all over the world!",
             is_host=True
