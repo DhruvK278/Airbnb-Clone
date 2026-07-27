@@ -44,11 +44,12 @@ def seed_database():
             sys.path.insert(0, backend_dir)
             
         from app.database import Base, engine
+        Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
         
-        from add_listings import add_more
-        add_more()
-        return {"status": "success", "message": "Database perfectly seeded with 10 listings!"}
+        from app.seed_database import seed
+        seed()
+        return {"status": "success", "message": "Database perfectly seeded with ALL local listings!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
