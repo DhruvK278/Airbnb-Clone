@@ -8,6 +8,7 @@ class UserBase(BaseModel):
     profile_picture_url: Optional[str] = None
     bio: Optional[str] = None
     is_host: bool = False
+    is_superhost: bool = False
 
 class UserCreate(UserBase):
     password: str

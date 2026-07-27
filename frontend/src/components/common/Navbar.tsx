@@ -27,7 +27,7 @@ function SearchNavContent() {
   return (
     <>
       {/* Compact search pill — centered in the top row */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-4 z-10">
+      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-4 z-10">
         <div className="flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition bg-white px-2 py-1.5 gap-0 cursor-pointer">
           <div className="flex items-center gap-2 border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
             <span className="text-base">🏠</span> {locationLabel}
@@ -89,9 +89,9 @@ export default function Navbar() {
 
   // Determine navbar height
   const getNavbarHeight = () => {
-    if (isSearchPage) return 'h-[120px]'; // room for pill + filter row
-    if (isListingPage || isCompactNavbar || isBookPage) return 'h-[80px]';
-    return isScrolled ? 'h-[80px]' : 'h-[170px]';
+    if (isSearchPage) return 'h-[80px] md:h-[120px]'; // room for pill + filter row
+    if (isListingPage || isCompactNavbar || isBookPage) return 'h-[80px] md:h-[80px]';
+    return isScrolled ? 'h-[80px] md:h-[80px]' : 'h-[80px] md:h-[170px]';
   };
 
   // Determine spacer height
@@ -105,9 +105,9 @@ export default function Navbar() {
     <>
       {/* Spacer */}
       {isSearchPage ? (
-        <div className="h-[120px] w-full"></div>
+        <div className="h-[80px] md:h-[120px] w-full"></div>
       ) : isListingPage || isCompactNavbar || isBookPage ? (
-        <div className="h-[80px] w-full"></div>
+        <div className="h-[80px] md:h-[80px] w-full"></div>
       ) : (
         <>
           <div className="h-[180px] w-full hidden md:block"></div>
@@ -119,7 +119,7 @@ export default function Navbar() {
         <div className="max-w-[2520px] mx-auto px-4 sm:px-10 xl:px-20 h-full relative">
 
           {/* Top Row: Logo & Right Menu */}
-          <div className="flex justify-between items-center pt-5">
+          <div className="hidden md:flex justify-between items-center pt-5">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center z-20 relative">
               <Link href="/">
@@ -145,6 +145,19 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* MOBILE SEARCH PILL */}
+          {!isBookPage && (
+            <div className="md:hidden flex flex-col pt-4 pb-2 w-full z-20 relative">
+              <Link href="/" className="w-full flex items-center gap-4 bg-white border border-gray-300 rounded-full shadow-[0_3px_10px_rgb(0,0,0,0.08)] py-3 px-4 h-[54px]">
+                <Search size={20} strokeWidth={3} className="text-gray-800" />
+                <div className="flex flex-col flex-1">
+                  <span className="text-[14px] font-semibold text-gray-900 leading-[1.2]">Start your search</span>
+                  <span className="text-[12px] text-gray-500 leading-[1.2]">Anywhere · Anytime · Add guests</span>
+                </div>
+              </Link>
+            </div>
+          )}
+
           {/* ── Search Page: compact pill + filter row inside navbar ── */}
           {!isBookPage && isSearchPage && (
             <Suspense fallback={<div />}>
@@ -154,7 +167,7 @@ export default function Navbar() {
 
           {/* ── Listing Page: static compact pill ── */}
           {!isBookPage && isListingPage && (
-            <div className="absolute top-5 left-1/2 -translate-x-1/2 flex justify-center z-10">
+            <div className="hidden md:flex absolute top-5 left-1/2 -translate-x-1/2 justify-center z-10">
               <Link href="/">
                 <div className="flex items-center border border-gray-300 rounded-full shadow-sm hover:shadow-md transition bg-white pl-2 pr-2 py-2 gap-2 cursor-pointer">
                   <div className="flex items-center gap-2 border-r border-gray-300 px-4 font-medium text-sm text-gray-900">
@@ -227,7 +240,7 @@ export default function Navbar() {
               </div>
 
               {/* Big Search Bar Container */}
-              <div className={`absolute left-1/2 -translate-x-1/2 w-full flex justify-center transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] origin-center ${isScrolled ? 'top-[20px] opacity-0 scale-50 pointer-events-none' : 'top-[85px] opacity-100 scale-100'}`}>
+              <div className={`hidden md:flex absolute left-1/2 -translate-x-1/2 w-full justify-center transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] origin-center ${isScrolled ? 'top-[20px] opacity-0 scale-50 pointer-events-none' : 'top-[85px] opacity-100 scale-100'}`}>
                 <SearchBar />
               </div>
             </>

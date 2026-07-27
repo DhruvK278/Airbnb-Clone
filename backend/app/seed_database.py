@@ -65,6 +65,7 @@ def seed():
                 profile_picture_url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
                 bio="Superhost in NYC. I love sharing my beautiful apartments with travelers from around the world.",
                 is_host=True,
+                is_superhost=True,
             ),
             User(
                 email="marcus.chen@example.com",
@@ -73,6 +74,7 @@ def seed():
                 profile_picture_url="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
                 bio="LA-based host with a passion for design and architecture. My spaces reflect my love for modern living.",
                 is_host=True,
+                is_superhost=True,
             ),
             User(
                 email="elena.martinez@example.com",

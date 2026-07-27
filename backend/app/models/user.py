@@ -14,6 +14,7 @@ class User(Base):
     profile_picture_url = Column(Text, nullable=True)
     bio = Column(Text, nullable=True)
     is_host = Column(Boolean, default=False)
+    is_superhost = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(
         DateTime,

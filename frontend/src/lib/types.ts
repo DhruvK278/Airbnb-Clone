@@ -5,6 +5,7 @@ export interface User {
   profile_picture_url?: string;
   bio?: string;
   is_host: boolean;
+  is_superhost?: boolean;
   created_at: string;
 }
 
@@ -42,6 +43,7 @@ export interface ListingDetailResponse extends ListingListResponse {
   guests_max: number;
   cleaning_fee: number;
   created_at: string;
+  host: User;
   updated_at: string;
   amenities: Amenity[];
   host_id: number;

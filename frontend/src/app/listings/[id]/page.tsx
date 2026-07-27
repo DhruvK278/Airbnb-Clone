@@ -84,12 +84,24 @@ export default function ListingDetailPage() {
 
             {/* Host Profile Row */}
             <div className="flex items-center gap-4 py-6 border-b border-gray-200">
-              <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center bg-gray-200">
-                 <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" className="w-full h-full object-cover" alt="Host" />
+              <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center bg-gray-200 relative">
+                 <img src={listing.host.profile_picture_url || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} className="w-full h-full object-cover" alt="Host" />
+                 {listing.host.is_superhost && (
+                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-[2px]">
+                      <Medal size={16} className="text-[#FF385C] fill-current" />
+                    </div>
+                 )}
               </div>
               <div>
-                <div className="text-[16px] font-semibold text-gray-900">Hosted by Ajay Singh</div>
-                <div className="text-[14px] text-gray-500">Superhost · 5 years hosting</div>
+                <div className="text-[16px] font-semibold text-gray-900 flex items-center gap-2">
+                  Hosted by {listing.host.full_name}
+                  {listing.host.is_superhost && (
+                    <span className="bg-[#FF385C] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Superhost</span>
+                  )}
+                </div>
+                <div className="text-[14px] text-gray-500">
+                  {listing.host.is_superhost ? "Superhost · " : ""} 5 years hosting
+                </div>
               </div>
             </div>
 

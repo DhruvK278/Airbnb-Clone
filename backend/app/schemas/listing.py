@@ -53,11 +53,14 @@ class ListingListResponse(ListingBase):
         orm_mode = True
         from_attributes = True
 
+from app.schemas.user import UserResponse
+
 class ListingResponse(ListingListResponse):
     """Detailed response for single listing view"""
     created_at: datetime
     updated_at: datetime
     amenities: List[AmenitySchema] = []
+    host: UserResponse
     
     class Config:
         orm_mode = True
