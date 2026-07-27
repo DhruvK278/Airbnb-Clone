@@ -11,6 +11,12 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = '["*"]'
 
     @property
+    def get_database_url(self) -> str:
+        if self.DATABASE_URL.startswith("postgres://"):
+            return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        return self.DATABASE_URL
+
+    @property
     def cors_origins_list(self) -> List[str]:
         return json.loads(self.CORS_ORIGINS)
 
