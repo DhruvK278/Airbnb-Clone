@@ -33,6 +33,22 @@ app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
 app.include_router(reviews.router, prefix="/api/reviews", tags=["Reviews"])
 app.include_router(favorites.router, prefix="/api/favorites", tags=["Favorites"])
 
+@app.get("/api/seed", tags=["Seed"])
+def seed_database():
+    """Seed the database with initial fake data."""
+    try:
+        import sys
+        import os
+        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if backend_dir not in sys.path:
+            sys.path.insert(0, backend_dir)
+            
+        from add_listings import add_more
+        add_more()
+        return {"status": "success", "message": "Database perfectly seeded with 10 listings!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 if __name__ == "__main__":
     import uvicorn
     import sys

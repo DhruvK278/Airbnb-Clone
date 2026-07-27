@@ -6,10 +6,40 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.database import SessionLocal
 from app.models.listing import Listing, ListingImage, Amenity, ListingAmenity
+from app.models.user import User
+from app.auth.security import get_password_hash
 
 def add_more():
     db = SessionLocal()
     
+    if db.query(Listing).first():
+        print("Database already has listings. Skipping seed.")
+        db.close()
+        return
+
+    print("Creating fake hosts...")
+    for i in range(1, 6):
+        user = User(
+            email=f"host{i}@airbnb.com",
+            password_hash=get_password_hash("password123"),
+            full_name=f"Host Number {i}",
+            bio="I love hosting people from all over the world!",
+            is_host=True
+        )
+        db.add(user)
+    db.flush()
+
+    print("Creating amenities...")
+    amenities = [
+        "Wifi", "Kitchen", "Free parking on premises", "Pool", "Hot tub",
+        "Air conditioning", "Heating", "Washer", "Dryer", "TV",
+        "Gym", "Breakfast", "Indoor fireplace", "Smoking allowed"
+    ]
+    for am in amenities:
+        db.add(Amenity(name=am, icon_name="star"))
+    db.flush()
+
+    print("Creating listings...")
     image_sets = {
         "beach_house": [
             "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&h=600&fit=crop",
@@ -112,7 +142,7 @@ def add_more():
             db.add(ListingAmenity(listing_id=listing.id, amenity_id=aid))
             
     db.commit()
-    print("Added 10 new listings!")
+    print("Successfully seeded the remote database with 10 listings!")
     db.close()
 
 if __name__ == "__main__":
