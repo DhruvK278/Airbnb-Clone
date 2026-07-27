@@ -7,7 +7,9 @@ import { differenceInDays, parseISO, format } from 'date-fns';
 import { ChevronLeft, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function BookPage() {
+import { Suspense } from 'react';
+
+function BookPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -214,5 +216,17 @@ export default function BookPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-10 xl:px-20 py-12 flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    }>
+      <BookPageContent />
+    </Suspense>
   );
 }
