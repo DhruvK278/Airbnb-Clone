@@ -26,11 +26,10 @@ export default function CategoryRow() {
         <div
           key={cat.label}
           onClick={() => setSelected(cat.label)}
-          className={`flex flex-col items-center gap-2 cursor-pointer min-w-max pb-2 border-b-2 transition-colors ${
-            selected === cat.label
+          className={`flex flex-col items-center gap-2 cursor-pointer min-w-max pb-2 border-b-2 transition-colors ${selected === cat.label
               ? 'border-black text-black'
               : 'border-transparent text-gray-500 hover:text-black hover:border-gray-300'
-          }`}
+            }`}
         >
           <span className="text-2xl">{cat.icon}</span>
           <span className="text-xs font-semibold">{cat.label}</span>

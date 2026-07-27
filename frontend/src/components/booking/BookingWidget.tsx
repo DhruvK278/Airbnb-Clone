@@ -9,7 +9,7 @@ import { createBooking, getListingAvailability } from '@/lib/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import 'react-day-picker/dist/style.css';
+import 'react-day-picker/style.css';
 
 export default function BookingWidget({ listing }: { listing: ListingDetailResponse }) {
   const router = useRouter();

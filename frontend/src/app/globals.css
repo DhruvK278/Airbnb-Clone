@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "react-day-picker/dist/style.css";
+@import "react-day-picker/style.css";
 
 /* ── Airbnb Design Tokens (Tailwind v4) ── */
 @theme inline {
@@ -81,3 +81,51 @@ body {
 .btn-outline:hover {
   background-color: var(--color-gray-50);
 }
+
+/* ── Hide scrollbar ── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── DayPicker Airbnb Overrides ── */
+.rdp-airbnb {
+  --rdp-accent-color: #222222;
+  --rdp-accent-background-color: #f7f7f7;
+  --rdp-range_start-color: #ffffff;
+  --rdp-range_end-color: #ffffff;
+  --rdp-range_middle-background-color: #f0f0f0;
+  --rdp-range_start-background: #222222;
+  --rdp-range_end-background: #222222;
+  font-family: var(--font-sans);
+}
+
+.rdp-airbnb .rdp-day {
+  border-radius: 9999px;
+}
+
+.rdp-airbnb .rdp-day_button {
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.rdp-airbnb .rdp-day_button:hover:not([disabled]) {
+  border: 1.5px solid #222222;
+}
+
+.rdp-airbnb .rdp-caption_label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.rdp-airbnb .rdp-nav {
+  gap: 4px;
+}
+
+.rdp-airbnb .rdp-chevron {
+  fill: #222222;
+}
+
