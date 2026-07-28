@@ -1,6 +1,6 @@
 # Airbnb Clone
 
-🚀 **Live Demo (Frontend):** [https://airbnb-clone-git-main-dhruvk278s-projects.vercel.app](https://airbnb-clone-git-main-dhruvk278s-projects.vercel.app)
+🚀 **Live Demo (Frontend):** [https://airbnb-clone-phi-tan.vercel.app/](https://airbnb-clone-phi-tan.vercel.app/)
 ⚙️ **Live API (Backend):** [https://airbnb-clone-backend-y8mi.onrender.com](https://airbnb-clone-backend-y8mi.onrender.com)
 
 A full-stack, feature-rich Airbnb clone built with modern web technologies. This project perfectly replicates the core Airbnb user experience, including searching for properties, viewing listing details, mocking checkout/booking flows, managing a host dashboard, and curating a wishlist.
