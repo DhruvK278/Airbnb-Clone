@@ -27,8 +27,8 @@ class ListingBase(BaseModel):
     title: str = Field(..., max_length=255)
     description: str
     location: str = Field(..., max_length=255)
-    latitude: float
-    longitude: float
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     property_type: str = Field(..., max_length=100)
     bedrooms: int = Field(..., ge=0)
     bathrooms: int = Field(..., ge=0)

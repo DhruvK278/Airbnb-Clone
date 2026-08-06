@@ -33,7 +33,7 @@ export default function CreateListingPage() {
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const { image_url, ...rest } = data;
+      const { image_url, beds, ...rest } = data;
       const payload = {
         ...rest,
         image_urls: image_url ? [image_url] : [],
