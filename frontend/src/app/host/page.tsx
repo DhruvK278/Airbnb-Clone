@@ -12,7 +12,7 @@ export default function HostDashboard() {
   
   const { data: listingsData, isLoading: listingsLoading } = useQuery({
     queryKey: ['listings'],
-    queryFn: () => getListings(),
+    queryFn: () => getListings({ limit: 100 }),
   });
 
   const { data: bookingsData, isLoading: bookingsLoading } = useQuery({

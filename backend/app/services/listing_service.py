@@ -91,6 +91,6 @@ class ListingService:
             query = query.filter(not_(Listing.id.in_(overlapping_bookings)))
 
         total = query.count()
-        listings = query.offset(skip).limit(limit).all()
+        listings = query.order_by(Listing.id.desc()).offset(skip).limit(limit).all()
         
         return listings, total
