@@ -1,15 +1,16 @@
 from pydantic import BaseModel, Field
-from datetime import date, datetime
+from datetime import datetime
 from typing import Optional
 from .listing import ListingListResponse
 
 class BookingBase(BaseModel):
-    check_in_date: date
-    check_out_date: date
+    check_in_date: datetime
+    check_out_date: datetime
     num_guests: int = Field(..., ge=1)
 
 class BookingCreate(BookingBase):
     listing_id: int
+    guest_timezone: Optional[str] = None
 
 class BookingResponse(BookingBase):
     id: int
@@ -17,6 +18,7 @@ class BookingResponse(BookingBase):
     guest_id: int
     total_price: float
     status: str
+    guest_timezone: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     

@@ -3,7 +3,6 @@ from sqlalchemy import (
     Integer,
     Float,
     String,
-    Date,
     DateTime,
     ForeignKey,
     Index,
@@ -19,11 +18,12 @@ class Booking(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     listing_id = Column(Integer, ForeignKey("listings.id"), nullable=False)
     guest_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    check_in_date = Column(Date, nullable=False, index=True)
-    check_out_date = Column(Date, nullable=False, index=True)
+    check_in_date = Column(DateTime, nullable=False, index=True)
+    check_out_date = Column(DateTime, nullable=False, index=True)
     num_guests = Column(Integer, nullable=False)
     total_price = Column(Float, nullable=False)
     status = Column(String(50), default="confirmed", nullable=False)  # confirmed | cancelled | completed
+    guest_timezone = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(
         DateTime,

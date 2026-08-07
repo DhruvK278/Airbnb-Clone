@@ -31,6 +31,7 @@ class ListingService:
             guests_max=listing.guests_max,
             price_per_night=listing.price_per_night,
             cleaning_fee=listing.cleaning_fee,
+            timezone=listing.timezone,
         )
         db.add(db_listing)
         db.flush() # To get the listing.id

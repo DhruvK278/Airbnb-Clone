@@ -35,6 +35,7 @@ class ListingBase(BaseModel):
     guests_max: int = Field(..., ge=1)
     price_per_night: float = Field(..., ge=0)
     cleaning_fee: float = Field(default=0, ge=0)
+    timezone: str = Field(default="UTC", max_length=50)
 
 class ListingCreate(ListingBase):
     amenity_ids: List[int] = Field(default_factory=list)

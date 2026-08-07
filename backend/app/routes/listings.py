@@ -81,32 +81,34 @@ def create_listing(listing: ListingCreate, db: Session = Depends(get_db)):
 def get_listing_availability(listing_id: int, year: int, month: int, db: Session = Depends(get_db)):
     """
     Get booked dates for a specific month/year.
+    Now works with DateTime (UTC) columns — extracts the date portion for the calendar.
     """
-    from datetime import date
+    from datetime import date, datetime, timedelta
     import calendar
     from app.models.booking import Booking
     
-    start_date = date(year, month, 1)
-    end_date = date(year, month, calendar.monthrange(year, month)[1])
+    # Build the month range as datetimes for comparison against UTC DateTime columns
+    start_dt = datetime(year, month, 1, 0, 0, 0)
+    last_day = calendar.monthrange(year, month)[1]
+    end_dt = datetime(year, month, last_day, 23, 59, 59)
     
     bookings = db.query(Booking).filter(
         Booking.listing_id == listing_id,
         Booking.status == 'confirmed',
-        Booking.check_in_date <= end_date,
-        Booking.check_out_date >= start_date
+        Booking.check_in_date <= end_dt,
+        Booking.check_out_date >= start_dt
     ).all()
     
-    booked_dates = []
+    booked_dates = set()
     for b in bookings:
-        # Simplistic range appending
-        current = max(b.check_in_date, start_date)
-        end = min(b.check_out_date, end_date)
+        # Extract date portion from UTC datetimes
+        current = max(b.check_in_date.date(), date(year, month, 1))
+        end = min(b.check_out_date.date(), date(year, month, last_day))
         while current <= end:
-            booked_dates.append(current.isoformat())
-            from datetime import timedelta
+            booked_dates.add(current.isoformat())
             current += timedelta(days=1)
             
-    return {"booked_dates": list(set(booked_dates))}
+    return {"booked_dates": list(booked_dates)}
 
 @router.put("/{listing_id}", response_model=ListingResponse)
 def update_listing(listing_id: int, listing_data: dict, db: Session = Depends(get_db)):

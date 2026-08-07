@@ -10,7 +10,8 @@ Usage:
 import sys
 import os
 import hashlib
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone, time
+from zoneinfo import ZoneInfo
 
 # Ensure the backend/ directory is on the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -26,6 +27,19 @@ from app.models.favorite import Favorite
 def hash_password(password: str) -> str:
     """Simple hash for mocked auth — NOT production-safe."""
     return hashlib.sha256(password.encode()).hexdigest()
+
+
+# Fixed check-in / check-out times (property-local)
+CHECK_IN_TIME = time(15, 0)   # 3:00 PM
+CHECK_OUT_TIME = time(11, 0)  # 11:00 AM
+
+
+def make_utc_booking_times(check_in_date: date, check_out_date: date, tz_str: str) -> tuple:
+    """Apply fixed check-in/out times in listing timezone, return UTC datetimes."""
+    tz = ZoneInfo(tz_str)
+    ci = datetime.combine(check_in_date, CHECK_IN_TIME, tzinfo=tz).astimezone(timezone.utc).replace(tzinfo=None)
+    co = datetime.combine(check_out_date, CHECK_OUT_TIME, tzinfo=tz).astimezone(timezone.utc).replace(tzinfo=None)
+    return ci, co
 
 
 def calculate_total_price(
@@ -222,7 +236,7 @@ def seed():
                 "description": "Charming studio apartment just 2 blocks from Central Park. Recently renovated with modern furnishings, a fully equipped kitchen, and fast WiFi. Perfect for solo travelers or couples exploring NYC.",
                 "location": "New York, NY", "latitude": 40.7831, "longitude": -73.9712,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 150.0, "cleaning_fee": 50.0, "images": "apartment_nyc",
+                "price_per_night": 150.0, "cleaning_fee": 50.0, "timezone": "America/New_York", "images": "apartment_nyc",
                 "amenity_ids": [1, 2, 3, 4, 10, 12, 13, 15],
             },
             {
@@ -230,7 +244,7 @@ def seed():
                 "description": "Industrial-chic loft in Williamsburg with exposed brick, 16-foot ceilings, and stunning Manhattan skyline views. Walking distance to the best restaurants and nightlife in Brooklyn.",
                 "location": "New York, NY", "latitude": 40.7081, "longitude": -73.9571,
                 "property_type": "Loft", "bedrooms": 2, "bathrooms": 1, "guests_max": 4,
-                "price_per_night": 225.0, "cleaning_fee": 65.0, "images": "loft_nyc",
+                "price_per_night": 225.0, "cleaning_fee": 65.0, "timezone": "America/New_York", "images": "loft_nyc",
                 "amenity_ids": [1, 2, 3, 4, 5, 6, 10, 12, 15],
             },
             {
@@ -238,7 +252,7 @@ def seed():
                 "description": "Elegant one-bedroom on the Upper East Side, steps from Museum Mile. Marble bathroom, gourmet kitchen, doorman building. Experience NYC like a local in one of the city's finest neighborhoods.",
                 "location": "New York, NY", "latitude": 40.7736, "longitude": -73.9566,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 3,
-                "price_per_night": 275.0, "cleaning_fee": 60.0, "images": "apartment_nyc",
+                "price_per_night": 275.0, "cleaning_fee": 60.0, "timezone": "America/New_York", "images": "apartment_nyc",
                 "amenity_ids": [1, 2, 3, 4, 5, 10, 11, 12, 13, 15],
             },
             {
@@ -246,7 +260,7 @@ def seed():
                 "description": "A cozy pre-war apartment in the heart of Greenwich Village. Hardwood floors, exposed brick, and a quiet tree-lined street. Close to Washington Square Park and NYU.",
                 "location": "New York, NY", "latitude": 40.7336, "longitude": -73.9991,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 195.0, "cleaning_fee": 45.0, "images": "loft_nyc",
+                "price_per_night": 195.0, "cleaning_fee": 45.0, "timezone": "America/New_York", "images": "loft_nyc",
                 "amenity_ids": [1, 2, 3, 4, 10, 12, 15],
             },
             # Host 2: Marcus Chen (LA) — 4 listings
@@ -255,7 +269,7 @@ def seed():
                 "description": "Stunning modern home perched in the Hollywood Hills with panoramic views of LA. Infinity pool, open-plan living, gourmet kitchen. The ultimate LA experience.",
                 "location": "Los Angeles, CA", "latitude": 34.1341, "longitude": -118.3215,
                 "property_type": "Entire home", "bedrooms": 3, "bathrooms": 2, "guests_max": 6,
-                "price_per_night": 450.0, "cleaning_fee": 100.0, "images": "modern_la",
+                "price_per_night": 450.0, "cleaning_fee": 100.0, "timezone": "America/Los_Angeles", "images": "modern_la",
                 "amenity_ids": [1, 2, 3, 7, 8, 10, 11, 12, 13, 14, 15],
             },
             {
@@ -263,7 +277,7 @@ def seed():
                 "description": "Wake up to the sound of waves in this beautiful Malibu beachfront villa. Direct beach access, spacious deck, and stunning sunset views. A true California dream.",
                 "location": "Los Angeles, CA", "latitude": 34.0259, "longitude": -118.7798,
                 "property_type": "Villa", "bedrooms": 4, "bathrooms": 3, "guests_max": 8,
-                "price_per_night": 420.0, "cleaning_fee": 120.0, "images": "villa_la",
+                "price_per_night": 420.0, "cleaning_fee": 120.0, "timezone": "America/Los_Angeles", "images": "villa_la",
                 "amenity_ids": [1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 14],
             },
             {
@@ -271,7 +285,7 @@ def seed():
                 "description": "Bright and airy studio in the heart of Venice Beach. Steps from the boardwalk, Abbot Kinney, and world-class restaurants. Perfect for the creative traveler.",
                 "location": "Los Angeles, CA", "latitude": 33.9850, "longitude": -118.4695,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 175.0, "cleaning_fee": 40.0, "images": "modern_la",
+                "price_per_night": 175.0, "cleaning_fee": 40.0, "timezone": "America/Los_Angeles", "images": "modern_la",
                 "amenity_ids": [1, 2, 3, 7, 10, 12, 15],
             },
             {
@@ -279,7 +293,7 @@ def seed():
                 "description": "Luxurious penthouse loft in the Arts District with floor-to-ceiling windows, rooftop access, and designer furnishings. Walk to galleries, restaurants, and nightlife.",
                 "location": "Los Angeles, CA", "latitude": 34.0407, "longitude": -118.2355,
                 "property_type": "Loft", "bedrooms": 2, "bathrooms": 2, "guests_max": 4,
-                "price_per_night": 320.0, "cleaning_fee": 75.0, "images": "loft_sf",
+                "price_per_night": 320.0, "cleaning_fee": 75.0, "timezone": "America/Los_Angeles", "images": "loft_sf",
                 "amenity_ids": [1, 2, 3, 5, 6, 7, 10, 11, 12, 15],
             },
             # Host 3: Elena Martinez (Miami) — 4 listings
@@ -288,7 +302,7 @@ def seed():
                 "description": "Luxurious condo directly on South Beach with floor-to-ceiling ocean views. Resort-style amenities including pool, spa, and gym. Walk to Ocean Drive dining and nightlife.",
                 "location": "Miami, FL", "latitude": 25.7826, "longitude": -80.1341,
                 "property_type": "Apartment", "bedrooms": 2, "bathrooms": 2, "guests_max": 4,
-                "price_per_night": 350.0, "cleaning_fee": 80.0, "images": "beach_miami",
+                "price_per_night": 350.0, "cleaning_fee": 80.0, "timezone": "America/New_York", "images": "beach_miami",
                 "amenity_ids": [1, 2, 3, 5, 8, 9, 10, 11, 12, 15],
             },
             {
@@ -296,7 +310,7 @@ def seed():
                 "description": "Beautifully restored Art Deco studio in a historic Miami Beach building. Steps from the beach, Lincoln Road, and the best restaurants in South Florida.",
                 "location": "Miami, FL", "latitude": 25.7907, "longitude": -80.1300,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 165.0, "cleaning_fee": 45.0, "images": "condo_miami",
+                "price_per_night": 165.0, "cleaning_fee": 45.0, "timezone": "America/New_York", "images": "condo_miami",
                 "amenity_ids": [1, 2, 3, 8, 10, 12, 15],
             },
             {
@@ -304,7 +318,7 @@ def seed():
                 "description": "Modern luxury apartment in Brickell with bay views. Full amenities including infinity pool, fitness center, and concierge. In the heart of Miami's financial district.",
                 "location": "Miami, FL", "latitude": 25.7617, "longitude": -80.1918,
                 "property_type": "Apartment", "bedrooms": 2, "bathrooms": 2, "guests_max": 4,
-                "price_per_night": 280.0, "cleaning_fee": 70.0, "images": "condo_miami",
+                "price_per_night": 280.0, "cleaning_fee": 70.0, "timezone": "America/New_York", "images": "condo_miami",
                 "amenity_ids": [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 15],
             },
             {
@@ -312,7 +326,7 @@ def seed():
                 "description": "Lush tropical villa in quiet Coconut Grove with private garden, pool, and outdoor dining area. A serene retreat just minutes from downtown Miami.",
                 "location": "Miami, FL", "latitude": 25.7126, "longitude": -80.2590,
                 "property_type": "Villa", "bedrooms": 3, "bathrooms": 2, "guests_max": 6,
-                "price_per_night": 395.0, "cleaning_fee": 90.0, "images": "villa_la",
+                "price_per_night": 395.0, "cleaning_fee": 90.0, "timezone": "America/New_York", "images": "villa_la",
                 "amenity_ids": [1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 14],
             },
             # Host 4: James Wilson (San Francisco) — 4 listings
@@ -321,7 +335,7 @@ def seed():
                 "description": "Converted warehouse loft in SoMa with soaring ceilings, exposed brick, and access to a stunning rooftop terrace. Walk to SFMOMA and the best of downtown SF.",
                 "location": "San Francisco, CA", "latitude": 37.7749, "longitude": -122.3964,
                 "property_type": "Loft", "bedrooms": 2, "bathrooms": 1, "guests_max": 4,
-                "price_per_night": 245.0, "cleaning_fee": 60.0, "images": "loft_sf",
+                "price_per_night": 245.0, "cleaning_fee": 60.0, "timezone": "America/Los_Angeles", "images": "loft_sf",
                 "amenity_ids": [1, 2, 3, 4, 5, 10, 12, 15],
             },
             {
@@ -329,7 +343,7 @@ def seed():
                 "description": "Gorgeous Victorian flat in Pacific Heights with bay windows, period details, and views of the Golden Gate Bridge. One of SF's most desirable neighborhoods.",
                 "location": "San Francisco, CA", "latitude": 37.7925, "longitude": -122.4356,
                 "property_type": "Entire home", "bedrooms": 2, "bathrooms": 1, "guests_max": 4,
-                "price_per_night": 310.0, "cleaning_fee": 70.0, "images": "apartment_nyc",
+                "price_per_night": 310.0, "cleaning_fee": 70.0, "timezone": "America/Los_Angeles", "images": "apartment_nyc",
                 "amenity_ids": [1, 2, 3, 4, 5, 6, 10, 12, 13, 15],
             },
             {
@@ -337,7 +351,7 @@ def seed():
                 "description": "Escape to nature in this charming cabin nestled among the redwoods of Muir Woods. Perfect for hikers and nature lovers seeking peace and quiet.",
                 "location": "San Francisco, CA", "latitude": 37.8912, "longitude": -122.5714,
                 "property_type": "Cabin", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 135.0, "cleaning_fee": 40.0, "images": "cabin",
+                "price_per_night": 135.0, "cleaning_fee": 40.0, "timezone": "America/Los_Angeles", "images": "cabin",
                 "amenity_ids": [1, 2, 4, 7, 12, 13, 14],
             },
             {
@@ -345,7 +359,7 @@ def seed():
                 "description": "Colorful apartment in the vibrant Mission District, surrounded by murals, taquerias, and indie coffee shops. A true San Francisco cultural experience.",
                 "location": "San Francisco, CA", "latitude": 37.7599, "longitude": -122.4148,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 3,
-                "price_per_night": 185.0, "cleaning_fee": 45.0, "images": "loft_sf",
+                "price_per_night": 185.0, "cleaning_fee": 45.0, "timezone": "America/Los_Angeles", "images": "loft_sf",
                 "amenity_ids": [1, 2, 3, 5, 10, 12, 15],
             },
             # Host 5: Aisha Patel (Chicago + Austin) — 4 listings
@@ -354,7 +368,7 @@ def seed():
                 "description": "Stunning condo on Chicago's famous Magnificent Mile. Floor-to-ceiling windows with lake and city views. Steps from world-class shopping, dining, and entertainment.",
                 "location": "Chicago, IL", "latitude": 41.8942, "longitude": -87.6245,
                 "property_type": "Apartment", "bedrooms": 2, "bathrooms": 2, "guests_max": 4,
-                "price_per_night": 240.0, "cleaning_fee": 60.0, "images": "chicago_condo",
+                "price_per_night": 240.0, "cleaning_fee": 60.0, "timezone": "America/Chicago", "images": "chicago_condo",
                 "amenity_ids": [1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 15],
             },
             {
@@ -362,7 +376,7 @@ def seed():
                 "description": "Eclectic flat in trendy Wicker Park with vintage furnishings and local art. Walk to the best bars, restaurants, and boutiques in Chicago's hippest neighborhood.",
                 "location": "Chicago, IL", "latitude": 41.9088, "longitude": -87.6796,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 130.0, "cleaning_fee": 40.0, "images": "chicago_condo",
+                "price_per_night": 130.0, "cleaning_fee": 40.0, "timezone": "America/Chicago", "images": "chicago_condo",
                 "amenity_ids": [1, 2, 3, 4, 5, 10, 12, 15],
             },
             {
@@ -370,7 +384,7 @@ def seed():
                 "description": "Unique treehouse retreat in the Texas Hill Country, just 30 minutes from downtown Austin. Surrounded by oak trees with a private deck and stargazing platform.",
                 "location": "Austin, TX", "latitude": 30.3515, "longitude": -97.8353,
                 "property_type": "Treehouse", "bedrooms": 1, "bathrooms": 1, "guests_max": 2,
-                "price_per_night": 175.0, "cleaning_fee": 35.0, "images": "treehouse",
+                "price_per_night": 175.0, "cleaning_fee": 35.0, "timezone": "America/Chicago", "images": "treehouse",
                 "amenity_ids": [1, 4, 7, 12, 13, 14],
             },
             {
@@ -378,7 +392,7 @@ def seed():
                 "description": "Sleek modern condo in the heart of Austin's entertainment district. Walk to 6th Street, Rainey Street, and the best live music venues in the world.",
                 "location": "Austin, TX", "latitude": 30.2672, "longitude": -97.7431,
                 "property_type": "Apartment", "bedrooms": 1, "bathrooms": 1, "guests_max": 3,
-                "price_per_night": 155.0, "cleaning_fee": 40.0, "images": "chicago_condo",
+                "price_per_night": 155.0, "cleaning_fee": 40.0, "timezone": "America/Chicago", "images": "chicago_condo",
                 "amenity_ids": [1, 2, 3, 5, 7, 8, 10, 11, 12, 15],
             },
         ]
@@ -403,6 +417,15 @@ def seed():
         print(f"  Created {len(listings_data)} listings with images and amenities")
 
         # ─── BOOKINGS ──────────────────────────────────────────
+        # Map listing_id → timezone for UTC conversion
+        listing_tz_map = {}
+        for ld in listings_data:
+            # After flush, listing IDs are sequential starting from 1
+            pass
+        # Re-query to get actual IDs and timezones
+        all_listings = db.query(Listing).all()
+        listing_tz_map = {l.id: l.timezone for l in all_listings}
+
         today = date.today()
         bookings_data = [
             # Past completed bookings (for reviews)
@@ -424,17 +447,21 @@ def seed():
 
         for bd in bookings_data:
             listing = db.query(Listing).get(bd["listing_id"])
+            tz_str = listing_tz_map.get(bd["listing_id"], "UTC")
             total = calculate_total_price(
                 listing.price_per_night, bd["check_in"], bd["check_out"], bd["num_guests"], listing.cleaning_fee
             )
+            # Apply fixed check-in/out times and convert to UTC
+            ci_utc, co_utc = make_utc_booking_times(bd["check_in"], bd["check_out"], tz_str)
             booking = Booking(
                 listing_id=bd["listing_id"],
                 guest_id=bd["guest_id"],
-                check_in_date=bd["check_in"],
-                check_out_date=bd["check_out"],
+                check_in_date=ci_utc,
+                check_out_date=co_utc,
                 num_guests=bd["num_guests"],
                 total_price=total,
                 status=bd["status"],
+                guest_timezone="America/New_York",  # Mock: all seed guests are in ET
             )
             db.add(booking)
 

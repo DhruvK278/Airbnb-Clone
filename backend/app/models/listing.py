@@ -29,6 +29,7 @@ class Listing(Base):
     guests_max = Column(Integer, nullable=True)
     price_per_night = Column(Float, nullable=False)
     cleaning_fee = Column(Float, default=50.0)
+    timezone = Column(String(50), default="UTC", nullable=False)
     rating = Column(Float, default=0.0)
     review_count = Column(Integer, default=0)
     is_active = Column(Boolean, default=True, index=True)
