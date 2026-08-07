@@ -8,7 +8,8 @@ import ListingHeader from '@/components/listing-detail/ListingHeader';
 import AmenitiesSection from '@/components/listing-detail/AmenitiesSection';
 import BookingWidget from '@/components/booking/BookingWidget';
 import StickyListingNav from '@/components/listing-detail/StickyListingNav';
-import { Star, Wind, Key, Maximize, Medal } from 'lucide-react';
+import { Star, Wind, Key, Maximize, Medal, Globe, Clock } from 'lucide-react';
+import { getTimezoneAbbr, getTimezoneLabel } from '@/lib/api';
 import { DayPicker } from 'react-day-picker';
 import { addDays } from 'date-fns';
 
@@ -126,6 +127,29 @@ export default function ListingDetailPage() {
                 <div>
                   <div className="font-semibold text-[16px]">Extra spacious</div>
                   <div className="text-[14px] text-gray-500 mt-0.5">Guests love this home's spaciousness for a comfortable stay.</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Timezone / Check-in Times */}
+            <div className="py-8 border-b border-gray-200">
+              <div className="flex items-start gap-4 text-gray-900">
+                <Globe className="mt-1 flex-shrink-0" size={26} strokeWidth={1.5} />
+                <div>
+                  <div className="font-semibold text-[16px]">Check-in & check-out times</div>
+                  <div className="text-[14px] text-gray-500 mt-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Clock size={14} className="text-gray-400" />
+                      <span>Check-in: <strong>3:00 PM</strong></span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock size={14} className="text-gray-400" />
+                      <span>Check-out: <strong>11:00 AM</strong></span>
+                    </div>
+                    <div className="text-xs text-gray-400 mt-2">
+                      {getTimezoneLabel(listing.timezone || 'UTC')} ({getTimezoneAbbr(listing.timezone || 'UTC')})
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

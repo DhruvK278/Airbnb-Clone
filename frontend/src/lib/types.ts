@@ -31,6 +31,7 @@ export interface ListingListResponse {
   rating: number;
   review_count: number;
   is_active: boolean;
+  timezone: string;
   images: ListingImage[];
 }
 
@@ -78,6 +79,7 @@ export interface BookingResponse {
   num_guests: number;
   total_price: number;
   status: string;
+  guest_timezone?: string;
   created_at: string;
   updated_at: string;
   listing?: ListingListResponse;

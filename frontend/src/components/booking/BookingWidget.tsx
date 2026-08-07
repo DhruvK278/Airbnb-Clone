@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { ListingDetailResponse } from '@/lib/types';
-import { Star } from 'lucide-react';
+import { Star, Globe } from 'lucide-react';
 import { DayPicker, DateRange } from 'react-day-picker';
 import { addDays, differenceInDays, format, parseISO } from 'date-fns';
-import { createBooking, getListingAvailability } from '@/lib/api';
+import { createBooking, getListingAvailability, getTimezoneAbbr, getTimezoneLabel } from '@/lib/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -38,6 +38,11 @@ export default function BookingWidget({ listing }: { listing: ListingDetailRespo
   const cleaningFee = listing.cleaning_fee;
   const serviceFee = Math.round(basePrice * 0.16);
   const total = basePrice + cleaningFee + serviceFee;
+
+  // Timezone display info
+  const listingTz = listing.timezone || 'UTC';
+  const tzAbbr = getTimezoneAbbr(listingTz);
+  const tzLabel = getTimezoneLabel(listingTz);
 
   const mutation = useMutation({
     mutationFn: createBooking,
@@ -86,12 +91,18 @@ export default function BookingWidget({ listing }: { listing: ListingDetailRespo
               <div className="text-sm text-gray-500 mt-0.5">
                 {dateRange?.from ? format(dateRange.from, 'MM/dd/yyyy') : 'Add date'}
               </div>
+              {dateRange?.from && (
+                <div className="text-[10px] text-gray-400 mt-0.5">3:00 PM {tzAbbr}</div>
+              )}
             </div>
             <div className="flex-1 p-3 hover:bg-gray-50">
               <div className="text-[10px] font-bold uppercase tracking-wider text-gray-900">CHECKOUT</div>
               <div className="text-sm text-gray-500 mt-0.5">
                 {dateRange?.to ? format(dateRange.to, 'MM/dd/yyyy') : 'Add date'}
               </div>
+              {dateRange?.to && (
+                <div className="text-[10px] text-gray-400 mt-0.5">11:00 AM {tzAbbr}</div>
+              )}
             </div>
           </div>
           <div className="p-3 hover:bg-gray-50 flex justify-between items-center" onClick={(e) => e.stopPropagation()}>
@@ -134,6 +145,15 @@ export default function BookingWidget({ listing }: { listing: ListingDetailRespo
             </div>
           </div>
         )}
+      </div>
+
+      {/* Timezone Info */}
+      <div className="flex items-center gap-2 mb-4 p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+        <Globe size={14} className="text-gray-500 flex-shrink-0" />
+        <div className="text-xs text-gray-600">
+          <span className="font-semibold text-gray-700">Check-in 3:00 PM · Check-out 11:00 AM</span>
+          <span className="block text-gray-400 mt-0.5">{tzLabel} ({tzAbbr})</span>
+        </div>
       </div>
 
       <button 

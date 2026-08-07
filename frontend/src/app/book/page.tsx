@@ -2,9 +2,9 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getListing, createBooking } from '@/lib/api';
+import { getListing, createBooking, getTimezoneAbbr, getTimezoneLabel } from '@/lib/api';
 import { differenceInDays, parseISO, format } from 'date-fns';
-import { ChevronLeft, Star } from 'lucide-react';
+import { ChevronLeft, Star, Globe, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { Suspense } from 'react';
@@ -61,12 +61,21 @@ function BookPageContent() {
   const serviceFee = Math.round(basePrice * 0.16);
   const total = basePrice + cleaningFee + serviceFee;
 
+  // Timezone info
+  const listingTz = listing.timezone || 'UTC';
+  const tzAbbr = getTimezoneAbbr(listingTz);
+  const tzLabel = getTimezoneLabel(listingTz);
+  const guestTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const guestTzAbbr = getTimezoneAbbr(guestTz);
+
   const handleConfirmPay = () => {
+    // Send as ISO datetime string — backend will apply fixed 3PM/11AM times
     mutation.mutate({
       listing_id: listing.id,
-      check_in_date: checkInStr,
-      check_out_date: checkOutStr,
-      num_guests: guests || 1
+      check_in_date: `${checkInStr}T15:00:00`,
+      check_out_date: `${checkOutStr}T11:00:00`,
+      num_guests: guests || 1,
+      guest_timezone: guestTz,
     });
   };
 
@@ -93,12 +102,43 @@ function BookPageContent() {
               </div>
               <button className="underline font-semibold">Edit</button>
             </div>
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="font-semibold text-gray-900">Guests</h3>
                 <p className="text-gray-500">{guests} guest{guests > 1 ? 's' : ''}</p>
               </div>
               <button className="underline font-semibold">Edit</button>
+            </div>
+
+            {/* Timezone Info Card */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Globe size={16} className="text-[#FF385C]" />
+                <span className="font-semibold text-sm text-gray-900">Timezone Details</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <Clock size={14} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div className="font-medium text-gray-700">Check-in</div>
+                    <div className="text-gray-500">{format(checkIn, 'MMM d, yyyy')} at 3:00 PM</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{tzLabel} ({tzAbbr})</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Clock size={14} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div className="font-medium text-gray-700">Check-out</div>
+                    <div className="text-gray-500">{format(checkOut, 'MMM d, yyyy')} at 11:00 AM</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{tzLabel} ({tzAbbr})</div>
+                  </div>
+                </div>
+              </div>
+              {guestTz !== listingTz && (
+                <div className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-100">
+                  ⏰ Your timezone ({guestTzAbbr}) differs from the property's timezone ({tzAbbr}). Times shown are in the property's local time.
+                </div>
+              )}
             </div>
           </section>
 

@@ -42,8 +42,14 @@ export const createBooking = async (bookingData: {
   check_in_date: string;
   check_out_date: string;
   num_guests: number;
+  guest_timezone?: string;
 }): Promise<BookingResponse> => {
-  const { data } = await api.post('/bookings', bookingData);
+  // Auto-detect guest timezone if not provided
+  const payload = {
+    ...bookingData,
+    guest_timezone: bookingData.guest_timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+  const { data } = await api.post('/bookings', payload);
   return data;
 };
 
@@ -51,3 +57,51 @@ export const getMyBookings = async (): Promise<BookingResponse[]> => {
   const { data } = await api.get('/bookings');
   return data;
 };
+
+/**
+ * Format a UTC ISO datetime string for display in a specific timezone.
+ * Uses the browser's Intl.DateTimeFormat for localized output.
+ */
+export function formatInTimezone(
+  utcDateStr: string,
+  timezone: string,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  const date = new Date(utcDateStr);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    ...options,
+  }).format(date);
+}
+
+/**
+ * Get a human-readable timezone abbreviation (e.g., "EST", "PST").
+ */
+export function getTimezoneAbbr(timezone: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      timeZoneName: 'short',
+    }).formatToParts(new Date());
+    const tzPart = parts.find(p => p.type === 'timeZoneName');
+    return tzPart?.value || timezone;
+  } catch {
+    return timezone;
+  }
+}
+
+/**
+ * Get a human-readable timezone label (e.g., "Eastern Time", "Pacific Time").
+ */
+export function getTimezoneLabel(timezone: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      timeZoneName: 'long',
+    }).formatToParts(new Date());
+    const tzPart = parts.find(p => p.type === 'timeZoneName');
+    return tzPart?.value || timezone;
+  } catch {
+    return timezone;
+  }
+}

@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getMyBookings } from '@/lib/api';
+import { getMyBookings, formatInTimezone, getTimezoneAbbr } from '@/lib/api';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
 import Link from 'next/link';
+import { Globe } from 'lucide-react';
 
 export default function TripsPage() {
   const queryClient = useQueryClient();
@@ -56,6 +57,31 @@ export default function TripsPage() {
 
   const upcomingBookings = bookings?.filter((b: any) => b.status === 'confirmed' && new Date(b.check_out_date) >= new Date()) || [];
 
+  /**
+   * Format booking dates for display.
+   * Uses the listing's timezone if available to show the correct local date.
+   */
+  const formatBookingDates = (booking: any) => {
+    const listingTz = booking.listing?.timezone;
+    if (listingTz) {
+      const checkInDisplay = formatInTimezone(booking.check_in_date, listingTz, {
+        day: 'numeric',
+      });
+      const checkOutDisplay = formatInTimezone(booking.check_out_date, listingTz, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      const tzAbbr = getTimezoneAbbr(listingTz);
+      return { dateStr: `${checkInDisplay}–${checkOutDisplay}`, tzAbbr };
+    }
+    // Fallback: parse as ISO and format directly
+    return {
+      dateStr: `${format(parseISO(booking.check_in_date), 'dd')}-${format(parseISO(booking.check_out_date), 'dd MMMM yyyy')}`,
+      tzAbbr: null,
+    };
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] mt-[80px] w-full max-w-[2520px] mx-auto relative">
       
@@ -73,50 +99,59 @@ export default function TripsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            {upcomingBookings.map((booking: any) => (
-              <div key={booking.id} className="flex gap-4 p-4 border border-gray-200 bg-white rounded-2xl hover:shadow-lg transition cursor-pointer shadow-sm relative group">
-                <div className="w-24 h-24 rounded-xl bg-gray-200 overflow-hidden shrink-0">
-                  {booking.listing?.images?.[0] ? (
-                    <img 
-                      src={booking.listing.images[0].image_url} 
-                      alt="Listing" 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-300" />
-                  )}
-                </div>
-                
-                <div className="flex flex-col flex-1 justify-center relative">
-                  <h4 className="text-[17px] font-semibold text-gray-900 leading-tight mb-1">{booking.listing?.location?.split(',')[0]}</h4>
-                  <p className="text-gray-500 text-[13px] mb-2">{format(parseISO(booking.check_in_date), 'dd')}-{format(parseISO(booking.check_out_date), 'dd MMMM yyyy')}</p>
-                  
-                  {/* Fake avatars row */}
-                  <div className="flex items-center">
-                    <div className="flex -space-x-1.5">
-                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="User 1"/>
-                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="User 2"/>
-                       <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop" alt="User 3"/>
-                    </div>
-                    <span className="text-[10px] font-semibold text-gray-900 ml-2">+{booking.guests || 1}</span>
+            {upcomingBookings.map((booking: any) => {
+              const { dateStr, tzAbbr } = formatBookingDates(booking);
+              return (
+                <div key={booking.id} className="flex gap-4 p-4 border border-gray-200 bg-white rounded-2xl hover:shadow-lg transition cursor-pointer shadow-sm relative group">
+                  <div className="w-24 h-24 rounded-xl bg-gray-200 overflow-hidden shrink-0">
+                    {booking.listing?.images?.[0] ? (
+                      <img 
+                        src={booking.listing.images[0].image_url} 
+                        alt="Listing" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-300" />
+                    )}
                   </div>
                   
-                  {/* Cancel Button */}
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if(confirm('Are you sure you want to cancel this booking?')) {
-                        cancelMutation.mutate(booking.id);
-                      }
-                    }}
-                    disabled={cancelMutation.isPending}
-                    className="absolute top-0 right-0 text-red-500 text-xs font-semibold hover:underline disabled:opacity-50 opacity-0 group-hover:opacity-100 transition"
-                  >
-                    Cancel
-                  </button>
+                  <div className="flex flex-col flex-1 justify-center relative">
+                    <h4 className="text-[17px] font-semibold text-gray-900 leading-tight mb-1">{booking.listing?.location?.split(',')[0]}</h4>
+                    <p className="text-gray-500 text-[13px] mb-1">{dateStr}</p>
+                    {tzAbbr && (
+                      <div className="flex items-center gap-1 text-[11px] text-gray-400 mb-2">
+                        <Globe size={10} />
+                        <span>{tzAbbr} · Check-in 3 PM · Check-out 11 AM</span>
+                      </div>
+                    )}
+                    
+                    {/* Fake avatars row */}
+                    <div className="flex items-center">
+                      <div className="flex -space-x-1.5">
+                         <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="User 1"/>
+                         <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="User 2"/>
+                         <img className="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop" alt="User 3"/>
+                      </div>
+                      <span className="text-[10px] font-semibold text-gray-900 ml-2">+{booking.guests || 1}</span>
+                    </div>
+                    
+                    {/* Cancel Button */}
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if(confirm('Are you sure you want to cancel this booking?')) {
+                          cancelMutation.mutate(booking.id);
+                        }
+                      }}
+                      disabled={cancelMutation.isPending}
+                      className="absolute top-0 right-0 text-red-500 text-xs font-semibold hover:underline disabled:opacity-50 opacity-0 group-hover:opacity-100 transition"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

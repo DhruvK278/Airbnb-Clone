@@ -28,7 +28,46 @@ export default function EditListingPage() {
     bedrooms: 1,
     bathrooms: 1,
     image_url: '',
+    timezone: 'UTC',
   });
+
+  // Common IANA timezones for the dropdown
+  const timezones = [
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'America/Anchorage',
+    'Pacific/Honolulu',
+    'America/Phoenix',
+    'America/Toronto',
+    'America/Vancouver',
+    'America/Mexico_City',
+    'America/Sao_Paulo',
+    'America/Argentina/Buenos_Aires',
+    'Europe/London',
+    'Europe/Paris',
+    'Europe/Berlin',
+    'Europe/Rome',
+    'Europe/Madrid',
+    'Europe/Amsterdam',
+    'Europe/Moscow',
+    'Europe/Istanbul',
+    'Asia/Dubai',
+    'Asia/Kolkata',
+    'Asia/Bangkok',
+    'Asia/Singapore',
+    'Asia/Shanghai',
+    'Asia/Tokyo',
+    'Asia/Seoul',
+    'Australia/Sydney',
+    'Australia/Melbourne',
+    'Pacific/Auckland',
+    'Africa/Cairo',
+    'Africa/Johannesburg',
+    'Africa/Lagos',
+    'UTC',
+  ];
 
   useEffect(() => {
     if (listing) {
@@ -42,6 +81,7 @@ export default function EditListingPage() {
         bedrooms: listing.bedrooms,
         bathrooms: listing.bathrooms,
         image_url: listing.images?.[0]?.image_url || '',
+        timezone: listing.timezone || 'UTC',
       });
     }
   }, [listing]);
@@ -184,6 +224,25 @@ export default function EditListingPage() {
               <label className="block text-sm font-semibold mb-2 text-gray-700">Bathrooms</label>
               <input type="number" min="0.5" step="0.5" name="bathrooms" value={formData.bathrooms} onChange={handleChange} className="w-full border rounded-lg p-3" />
             </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 border-b pb-8">
+          <h2 className="text-xl font-semibold">Property timezone</h2>
+          <p className="text-sm text-gray-500">Select the timezone where your property is located. This helps guests understand check-in and check-out times.</p>
+          <div>
+            <label className="block text-sm font-semibold mb-2">Timezone</label>
+            <select 
+              name="timezone" 
+              value={formData.timezone} 
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3 focus:outline-none focus:border-black appearance-none bg-white"
+            >
+              {timezones.map(tz => (
+                <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-2">Check-in: 3:00 PM · Check-out: 11:00 AM (in property timezone)</p>
           </div>
         </section>
 
